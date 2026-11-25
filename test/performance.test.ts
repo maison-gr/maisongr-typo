@@ -22,6 +22,9 @@ const hostile: Record<string, string> = {
   "a problem on every line": "x :\n".repeat(N / 4),
   "unclosed comments": "<!-- a ".repeat(N / 7),
   "unclosed raw elements": "<script a ".repeat(N / 10),
+  // CodeQL js/polynomial-redos, 25 Nov 2026: a link's trailing punctuation, and Markdown link targets that never close.
+  "a link followed by marks": `https://a.ca/${"!".repeat(N)}x`,
+  "unclosed link targets": "](".repeat(N / 2),
 };
 
 describe("performance", () => {
