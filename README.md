@@ -8,6 +8,8 @@
 ![Runtime dependencies: 0](https://img.shields.io/badge/runtime_dependencies-0-1b1a17)
 ![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-1b1a17)
 
+![npx maisongr-typo check content/: on the left, the report, each problem with its line, column and fix; on the right, the same French page typeset, every no-break space marked.](.github/assets/hero.png)
+
 ```js
 import { typeset } from "maisongr-typo";
 
@@ -163,6 +165,15 @@ The package ships an [Agent Skill](skills/maisongr-typo/SKILL.md) that tells a c
 ## Requirements
 
 Node.js 20.9 or later, on Linux, macOS and Windows. No runtime dependencies. An ES module: from CommonJS, `require("maisongr-typo")` works on Node 22.12 and later; on Node 20, use `await import("maisongr-typo")`. The CLI works the same everywhere.
+
+## More from Maison GR
+
+Open source from [Maison GR](https://www.maisongr.com), a software studio in Québec City:
+
+- [maisongr-sitemap](https://github.com/maison-gr/maisongr-sitemap): one sitemap, two readers. The XML search engines need, and a page in your site's own design for people.
+- [Maison GR Sitemap for WordPress](https://github.com/maison-gr/maisongr-sitemap-wordpress): the same sitemap for WordPress, in your theme's colours and type.
+- [maisongr-skills](https://github.com/maison-gr/maisongr-skills): one engineering standard for every AI coding agent: Claude Code, Codex, Cursor, Copilot, Gemini CLI.
+- [maisongr-law25](https://github.com/maison-gr/maisongr-law25): your Law 25 privacy impact assessment, next to your code, checked in CI.
 
 ## License
 
