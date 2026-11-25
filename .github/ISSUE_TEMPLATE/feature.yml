@@ -1,0 +1,15 @@
+name: Feature request
+description: A rule, a format or an option you need.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you need, and why
+      description: The text it's for, with an example, helps more than a proposed API. For a new rule, its source.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today instead

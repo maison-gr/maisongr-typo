@@ -1,0 +1,69 @@
+{
+  "name": "maisongr-typo",
+  "version": "1.0.0",
+  "description": "French typography the Québec way (OQLF), or France's: no-break spaces, « guillemets », 8 h 30, 1 490 $, 2e. For text, Markdown, HTML and JSON, with a CI check.",
+  "license": "MIT",
+  "author": "Maison GR (https://www.maisongr.com)",
+  "homepage": "https://github.com/maison-gr/maisongr-typo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maison-gr/maisongr-typo.git"
+  },
+  "bugs": "https://github.com/maison-gr/maisongr-typo/issues",
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20.9"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "maisongr-typo": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "llms.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepack": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "french",
+    "francais",
+    "typography",
+    "typographie",
+    "quebec",
+    "oqlf",
+    "fr-ca",
+    "fr-fr",
+    "non-breaking-space",
+    "espace-insecable",
+    "guillemets",
+    "i18n",
+    "l10n",
+    "markdown",
+    "lint",
+    "agent-skill"
+  ],
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}
