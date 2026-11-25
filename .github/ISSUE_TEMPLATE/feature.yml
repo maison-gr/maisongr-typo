@@ -1,15 +1,15 @@
-name: Feature request
-description: A rule, a format or an option you need.
+name: Demande de fonctionnalité · Feature request
+description: Une règle, un format ou une option dont vous avez besoin. A rule, a format or an option you need.
 labels: [enhancement]
 body:
   - type: textarea
     id: need
     attributes:
-      label: What you need, and why
-      description: The text it's for, with an example, helps more than a proposed API. For a new rule, its source.
+      label: Ce dont vous avez besoin, et pourquoi · What you need, and why
+      description: Le texte visé, avec un exemple, aide plus qu’une API proposée. Pour une nouvelle règle, sa source. The text it's for, with an example, helps more than a proposed API; for a new rule, its source.
     validations:
       required: true
   - type: textarea
     id: today
     attributes:
-      label: What you do today instead
+      label: Ce que vous faites aujourd’hui à la place · What you do today instead

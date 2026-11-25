@@ -1,17 +1,19 @@
-# Security
+# Sécurité
 
-## Reporting a problem
+**Français** · [English](SECURITY.en.md)
 
-Please report security problems privately, through GitHub: **Security → Report a vulnerability** on this repository. Don't open a public issue.
+## Signaler un problème
 
-Say what you found, how to reproduce it, and what it lets someone do. You'll get a reply within a week, and a fix or a plan once the problem is confirmed. Reports are credited in the release notes unless you'd rather not be named.
+Signalez les problèmes de sécurité en privé, par GitHub : **Security → Report a vulnerability** sur ce dépôt. N’ouvrez pas d’issue publique.
 
-## Supported versions
+Dites ce que vous avez trouvé, comment le reproduire, et ce que cela permet de faire. Vous aurez une réponse dans la semaine, et un correctif ou un plan une fois le problème confirmé. Les signalements sont mentionnés dans les notes de version, sauf si vous préférez ne pas être nommé.
 
-Security fixes go into the latest release.
+## Versions prises en charge
 
-## What the package does that matters here
+Les correctifs de sécurité vont dans la dernière version.
 
-- **`typeset()` and `check()`** read the string they are given and return a new one. They read no file, make no network request and keep nothing between calls. The patterns are written so they can't backtrack without end, and a test runs them on large hostile inputs (`test/performance.test.ts`); an input that makes one hang is a security bug.
-- **In HTML**, only text between tags changes: tags, attributes, comments, entities and the contents of `<script>`, `<style>`, `<pre>` and `<code>` come back as written, so typesetting never turns text into markup. It is not a sanitiser: typeset HTML you trust, or sanitise it after.
-- **The CLI** reads the files and folders it is given. `fix` writes those files and no others. It sends nothing anywhere.
+## Ce que fait le paquet, et qui compte ici
+
+- **`typeset()` et `check()`** lisent la chaîne qu’on leur donne et en renvoient une nouvelle. Ils ne lisent aucun fichier, ne font aucune requête réseau et ne gardent rien d’un appel à l’autre. Les expressions sont écrites pour ne jamais revenir en arrière sans fin, et un test les passe sur de grandes entrées hostiles (`test/performance.test.ts`); une entrée qui en fait bloquer une est un problème de sécurité.
+- **En HTML**, seul le texte entre les balises change : les balises, les attributs, les commentaires, les entités et le contenu de `<script>`, `<style>`, `<pre>` et `<code>` ressortent tels quels, donc la typographie ne transforme jamais du texte en balisage. Ce n’est pas un nettoyeur : appliquez-le à du HTML de confiance, ou nettoyez-le ensuite.
+- **L’outil en ligne de commande** lit les fichiers et les dossiers qu’on lui donne. `fix` écrit ces fichiers-là, et aucun autre. Il n’envoie rien nulle part.

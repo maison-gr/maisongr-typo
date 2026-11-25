@@ -1,24 +1,24 @@
-name: Wrong typography
-description: A sentence the package gets wrong, or leaves wrong.
+name: Typographie fautive · Wrong typography
+description: Une phrase que le paquet traite mal ou laisse fautive. A sentence the package gets wrong, or leaves wrong.
 labels: [bug]
 body:
   - type: textarea
     id: sentence
     attributes:
-      label: The sentence, what you got, and what it should be
-      description: Paste the input exactly. Say which spaces you expect (no-break, narrow no-break, none).
+      label: La phrase, ce que vous obtenez et ce que ce devrait être · The sentence, what you got, and what it should be
+      description: Collez l’entrée telle quelle. Précisez les espaces attendues (insécable, fine insécable, aucune). Paste the input exactly; say which spaces you expect (no-break, narrow no-break, none).
       render: text
     validations:
       required: true
   - type: input
     id: source
     attributes:
-      label: Where the rule comes from
-      description: The OQLF Banque de dépannage linguistique page (fr-CA), or a published style reference (fr-FR).
+      label: La source de la règle · Where the rule comes from
+      description: La page de la Banque de dépannage linguistique de l’OQLF (fr-CA), ou un ouvrage de référence publié (fr-FR). The OQLF page (fr-CA), or a published style reference (fr-FR).
   - type: input
     id: options
     attributes:
-      label: Options, format and version
-      description: "`locale`, `format` (text, markdown, html), and `npx maisongr-typo --version`"
+      label: Options, format et version · Options, format and version
+      description: "`locale`, `format` (text, markdown, html), et/and `npx maisongr-typo --version`"
     validations:
       required: true
