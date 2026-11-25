@@ -23,8 +23,14 @@ const EMAIL = /(?<![\p{L}\p{N}._%+-])[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L
 // A bare domain, with its path: lowercase top-level domain, so "M.Tremblay" or "fin.Voici" are not domains.
 const DOMAIN = /(?<![\p{L}\p{N}@/.\-])(?:[\p{L}\p{N}-]+\.)+[a-z]{2,24}(?:\/[^\s<>"«»]*)?(?![\p{L}\p{N}])/gu;
 const ENTITY = /&(?:[a-z][a-z0-9]*|#\d+|#x[\da-f]+);/giu;
-// Sentence punctuation right after a link belongs to the sentence, not the link.
-const TRAILING = /[.,;:!?)»”’]+$/u;
+// Sentence punctuation right after a link belongs to the sentence, not the link. Counted from the end without a
+// regex: an unanchored /[…]+$/ rescans a long run of marks from each of its characters (CodeQL js/polynomial-redos).
+const TRAILING = new Set([".", ",", ";", ":", "!", "?", ")", "»", "”", "’"]);
+const trailing = (s: string) => {
+  let n = 0;
+  while (n < s.length && TRAILING.has(s[s.length - 1 - n]!)) n++;
+  return n;
+};
 
 /** HTML elements whose content is not prose. */
 const RAW_HTML = "script|style|pre|code|kbd|samp|textarea|var|math|svg";
@@ -54,7 +60,7 @@ export function mask(input: string, format: Format, keep: readonly string[]): Ma
   const add = (re: RegExp, slot: string, trim = false) => {
     for (const m of input.matchAll(re)) {
       const at = m.index ?? 0;
-      claim(at, at + m[0].length - (trim ? (m[0].match(TRAILING)?.[0].length ?? 0) : 0), slot);
+      claim(at, at + m[0].length - (trim ? trailing(m[0]) : 0), slot);
     }
   };
   const lower = format === "text" ? input : input.toLowerCase();
@@ -80,7 +86,9 @@ export function mask(input: string, format: Format, keep: readonly string[]): Ma
     if (front) claim(0, front[0].length, MARKUP);
     fences(input, claim);
     inlineCode(input, claim);
-    add(/\]\([^)\s]*(?:\s+"[^"\n)]*")?\)/g, MARKUP); // a link's target and title
+    // A link's target and title; one level of balanced parentheses in the target (a Wikipedia address). An unmatched
+    // "(" ends the attempt at once, so many unclosed "](" are read once, not rescanned (CodeQL js/polynomial-redos).
+    add(/\]\((?:[^()\s]|\([^()\s]*\))*(?:\s+"[^"\n)]*")?\)/g, MARKUP);
     add(/^ {0,3}\[[^\]\n]+\]:[^\n]*$/gm, MARKUP); // a reference definition
     add(/<https?:\/\/[^<>\s]+>|<[^<>@\s]+@[^<>\s]+>/g, MARKUP); // autolinks
     blocks(/<!--/g, () => "-->");

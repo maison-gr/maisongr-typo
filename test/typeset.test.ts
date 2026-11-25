@@ -153,6 +153,14 @@ describe("markdown", () => {
   });
 });
 
+describe("markdown link targets", () => {
+  it("keeps a target with balanced parentheses whole, and still typesets around a broken one", () => {
+    const md = { format: "markdown" as const };
+    expect(typeset("[Film](https://fr.wikipedia.org/wiki/Prêt_(film)) !", md)).toBe("[Film](https://fr.wikipedia.org/wiki/Prêt_(film))!");
+    expect(typeset("Lien ](cassé : fin", md)).toBe(s("Lien ](cassé_: fin"));
+  });
+});
+
 describe("html", () => {
   const html = { format: "html" as const };
   it("typesets text nodes, never tags, attributes or code", () => {
