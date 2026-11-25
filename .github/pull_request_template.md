@@ -1,11 +1,11 @@
-## What this changes
+## Ce que ça change · What this changes
 
-## Where the rule comes from
+## La source de la règle · Where the rule comes from
 
-<!-- The OQLF page (fr-CA) or the style reference (fr-FR). -->
+<!-- La page de l’OQLF (fr-CA) ou l’ouvrage de référence (fr-FR). The OQLF page (fr-CA) or the style reference (fr-FR). -->
 
-## How it was checked
+## Comment c’est vérifié · How it was checked
 
-- [ ] A test that fails without this change, with the sentence that showed it
+- [ ] Un test qui échoue sans ce changement, avec la phrase qui l’a révélé · A test that fails without this change, with the sentence that showed it
 - [ ] `npm run typecheck`, `npm test`, `npm run build && node test/smoke.mjs`
-- [ ] The README's rules table, if a rule changed
+- [ ] Le tableau des règles du README, si une règle a changé · The README’s rules table, if a rule changed

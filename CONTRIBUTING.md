@@ -1,10 +1,12 @@
-# Contributing
+# Contribuer
 
-Thank you for helping. A sentence the package gets wrong, with what it should be and where that rule comes from, is the most useful thing you can send. Pull requests are welcome too.
+**Français** · [English](CONTRIBUTING.en.md)
 
-## Setup
+Merci de votre aide. Une phrase que le paquet traite mal, avec ce qu’elle devrait être et la source de cette règle, est ce qu’on peut nous envoyer de plus utile. Les demandes de fusion sont aussi les bienvenues.
 
-Development needs Node 22.12 or later (the package itself runs on 20.9 and later).
+## Mise en place
+
+Le développement demande Node 22.12 ou plus récent (le paquet lui-même fonctionne à partir de Node 20.9).
 
 ```sh
 npm ci
@@ -13,18 +15,18 @@ npm test
 npm run build && node test/smoke.mjs
 ```
 
-## What a change needs
+## Ce qu’une modification demande
 
-- **A source for every rule.** A rule cites the page of the Office québécois de la langue française's [Banque de dépannage linguistique](https://vitrinelinguistique.oqlf.gouv.qc.ca/banque-de-depannage-linguistique) it follows (for `fr-FR`, a published style reference). Put it in the rule's comment and in the README's table. Usage that varies stays an option, off by default.
-- **A test that fails without it.** Tests spell spaces out (`_` for U+00A0, `~` for U+202F) so a test can't pass by accident. Add the sentence that showed the problem.
-- **Nothing rewritten that isn't typography.** A rule changes the spaces and marks next to what it targets; it never changes words, and it never touches what `mask.ts` protects (links, code, tags).
-- **Idempotent.** `typeset(typeset(x)) === typeset(x)`, and `check()` finds nothing in what `typeset()` returned. The idempotence tests run every sample through every locale.
-- **No new runtime dependency.**
+- **Une source pour chaque règle.** Une règle cite la page de la [Banque de dépannage linguistique](https://vitrinelinguistique.oqlf.gouv.qc.ca/banque-de-depannage-linguistique) de l’Office québécois de la langue française qu’elle suit (pour `fr-FR`, un ouvrage de référence publié). Mettez-la dans le commentaire de la règle et dans le tableau du README. Un usage qui varie reste une option, désactivée par défaut.
+- **Un test qui échoue sans elle.** Les tests écrivent les espaces en clair (`_` pour U+00A0, `~` pour U+202F), pour qu’un test ne puisse pas réussir par hasard. Ajoutez la phrase qui a révélé le problème.
+- **Rien de réécrit qui ne soit pas de la typographie.** Une règle change les espaces et les signes voisins de ce qu’elle vise; elle ne change jamais de mots, et ne touche jamais à ce que protège `mask.ts` (liens, code, balises).
+- **Idempotente.** `typeset(typeset(x)) === typeset(x)`, et `check()` ne trouve rien dans ce que `typeset()` a renvoyé. Les tests d’idempotence passent chaque exemple dans chaque locale.
+- **Aucune nouvelle dépendance à l’exécution.**
 
-## Commits and pull requests
+## Commits et demandes de fusion
 
-Small commits, each doing one thing, with a [conventional](https://www.conventionalcommits.org/) message: `feat: write 1er for 1ier`, `fix: leave .zip after a space alone`. Keep a pull request to one change, and describe what you checked.
+De petits commits, chacun faisant une seule chose, avec un message [conventionnel](https://www.conventionalcommits.org/fr/) : `feat: write 1er for 1ier`, `fix: leave .zip after a space alone`. Une demande de fusion porte sur un seul changement, et dit ce que vous avez vérifié. Les messages de commit et le code restent en anglais; les échanges peuvent se faire en français ou en anglais.
 
-## Security
+## Sécurité
 
-Please don't open a public issue for a security problem. See [SECURITY.md](SECURITY.md).
+N’ouvrez pas d’issue publique pour un problème de sécurité. Voir [SECURITY.md](SECURITY.md).

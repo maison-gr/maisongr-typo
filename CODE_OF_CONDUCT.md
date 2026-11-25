@@ -1,16 +1,18 @@
-# Code of conduct
+# Code de conduite
 
-This project is for everyone who writes or builds in French, wherever they are and at any level of experience.
+**Français** · [English](CODE_OF_CONDUCT.en.md)
 
-In issues, pull requests and discussions:
+Ce projet est pour tous ceux et celles qui écrivent ou développent en français, où qu’ils soient et quel que soit leur niveau d’expérience.
 
-- be kind and patient, and assume good intent;
-- criticise code and ideas, never people;
-- keep to the topic, and accept a maintainer's decision on what the project includes;
-- don't harass, insult or demean anyone, publicly or privately, and don't share anyone's personal information.
+Dans les issues, les demandes de fusion et les discussions :
 
-Maintainers may edit or remove comments, close threads, and block people who don't follow this.
+- soyez bienveillant et patient, et présumez la bonne foi;
+- critiquez le code et les idées, jamais les personnes;
+- restez dans le sujet, et acceptez la décision d’un responsable sur ce que le projet inclut;
+- ne harcelez, n’insultez ni ne rabaissez personne, en public comme en privé, et ne divulguez les renseignements personnels de personne.
 
-To report a problem privately, use **Security → Report a vulnerability** on this repository, and say it's a conduct report. Reports are read only by the maintainers and kept confidential.
+Les responsables peuvent modifier ou retirer des commentaires, fermer des fils de discussion et bloquer les personnes qui ne respectent pas ces règles.
 
-This code is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/), version 2.1.
+Pour signaler un problème en privé, utilisez **Security → Report a vulnerability** sur ce dépôt, en précisant qu’il s’agit d’un signalement de conduite. Seuls les responsables lisent ces signalements, et ils restent confidentiels.
+
+Ce code est adapté du [Contributor Covenant](https://www.contributor-covenant.org/fr/version/2/1/code_of_conduct/), version 2.1.

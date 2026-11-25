@@ -1,14 +1,16 @@
-# Changelog
+# Journal des modifications
 
-All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and each release adds 0.0.1 to the version (1.0.1, 1.0.2, 1.0.3), whatever it contains.
+**Français** · [English](CHANGELOG.en.md)
 
-## [Unreleased]
+Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), et chaque version ajoute 0.0.1 au numéro (1.0.1, 1.0.2, 1.0.3), quel que soit son contenu.
+
+## [Non publié]
 
 ## [1.0.0] - 2026-11-25
 
-### Added
+### Ajouté
 
-- `typeset()` and `check()` for French text, Markdown and HTML, after the Office québécois de la langue française (`fr-CA`, the default) or France's usage (`fr-FR`): no space or a narrow no-break space before `;` `!` `?`, no-break spaces before `:` and inside « », straight quotes to « », hours (`8 h 30`), amounts and symbols (`29 $`, `12 535 $`, `15 %`, `20 °C`), digit groups, ordinals (`2e`, `1re`, `1er`), the typographic apostrophe and the ellipsis.
-- Links, emails, domains, entities, code, tags, link targets and the caller's own spellings (`keep`) are left as written.
-- The `maisongr-typo` CLI: `check` (exit 1 when something needs fixing, for CI), `fix`, standard input, JSON translation files with `--only-key`, and `--json` reports.
-- An Agent Skill and `llms.txt`.
+- `typeset()` et `check()` pour le texte français, le Markdown et le HTML, selon l’Office québécois de la langue française (`fr-CA`, par défaut) ou l’usage de la France (`fr-FR`) : aucune espace ou une espace fine insécable devant `;` `!` `?`, des espaces insécables devant `:` et à l’intérieur des « », les guillemets droits changés en « », les heures (`8 h 30`), les sommes et les symboles (`29 $`, `12 535 $`, `15 %`, `20 °C`), les tranches de chiffres, les ordinaux (`2e`, `1re`, `1er`), l’apostrophe typographique et les points de suspension.
+- Les liens, les courriels, les noms de domaine, les entités, le code, les balises, la cible des liens et les graphies de l’utilisateur (`keep`) restent tels quels.
+- L’outil en ligne de commande `maisongr-typo` : `check` (code de sortie 1 quand quelque chose est à corriger, pour la CI), `fix`, l’entrée standard, les fichiers de traduction JSON avec `--only-key`, et les rapports `--json`.
+- Une Agent Skill et un `llms.txt`.

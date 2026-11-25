@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Security problem
+  - name: Problème de sécurité · Security problem
     url: https://github.com/maison-gr/maisongr-typo/security/advisories/new
-    about: Report it privately, not in a public issue.
+    about: Signalez-le en privé, pas dans une issue publique. Report it privately, not in a public issue.
