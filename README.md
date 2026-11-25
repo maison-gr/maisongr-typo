@@ -162,7 +162,7 @@ The package ships an [Agent Skill](skills/maisongr-typo/SKILL.md) that tells a c
 
 ## Requirements
 
-Node.js 20.9 or later. No runtime dependencies. ESM.
+Node.js 20.9 or later, on Linux, macOS and Windows. No runtime dependencies. An ES module: from CommonJS, `require("maisongr-typo")` works on Node 22.12 and later; on Node 20, use `await import("maisongr-typo")`. The CLI works the same everywhere.
 
 ## License
 

@@ -161,6 +161,18 @@ describe("html", () => {
   });
 });
 
+describe("Windows line endings and uppercase HTML", () => {
+  it("typesets CRLF text the same way, keeping its line endings", () => {
+    expect(typeset("Titre :\r\nPrêt ?\r\n")).toBe(s("Titre_:\r\nPrêt?\r\n"));
+    const md = "```\r\na ? b\r\n```\r\nFin : ok\r\n";
+    expect(typeset(md, { format: "markdown" })).toBe(s("```\r\na ? b\r\n```\r\nFin_: ok\r\n"));
+  });
+
+  it("protects tags and raw elements written in capitals", () => {
+    expect(typeset("<P>Prêt ?</P><SCRIPT>a ? b</SCRIPT>", { format: "html" })).toBe("<P>Prêt?</P><SCRIPT>a ? b</SCRIPT>");
+  });
+});
+
 describe("check", () => {
   it("reports each problem where it is, and nothing once fixed", () => {
     const text = "Bonjour !\nIl est 8h30 ; le total : 29$";
