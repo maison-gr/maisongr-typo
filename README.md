@@ -166,4 +166,4 @@ Node.js 20.9 or later, on Linux, macOS and Windows. No runtime dependencies. An 
 
 ## License
 
-MIT, © Maison GR. The rules cite the OQLF's Banque de dépannage linguistique; its pages are the authority, and this package is not affiliated with the OQLF.
+MIT, © Maison GR Inc. The rules cite the OQLF's Banque de dépannage linguistique; its pages are the authority, and this package is not affiliated with the OQLF.

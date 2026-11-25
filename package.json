@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "French typography the Québec way (OQLF), or France's: no-break spaces, « guillemets », 8 h 30, 1 490 $, 2e. For text, Markdown, HTML and JSON, with a CI check.",
   "license": "MIT",
-  "author": "Maison GR (https://www.maisongr.com)",
+  "author": "Maison GR Inc. (https://www.maisongr.com)",
   "homepage": "https://github.com/maison-gr/maisongr-typo#readme",
   "repository": {
     "type": "git",
