@@ -8,7 +8,7 @@
 ![Runtime dependencies: 0](https://img.shields.io/badge/runtime_dependencies-0-1b1a17)
 ![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-1b1a17)
 
-![npx maisongr-typo check content/: on the left, the report, each problem with its line, column and fix; on the right, the same French page typeset, every no-break space marked.](.github/assets/hero.png)
+![A printer's proof of accueil.md: on the left, the French text as written, with proofreader's marks on 8h, 17h, the straight quotes, 2ème and 12535; on the right, the same text after maisongr-typo, every no-break space marked in red; in the margin, the rule behind each correction. Below: npx maisongr-typo check accueil.md, 11 corrections.](.github/assets/hero.png)
 
 ```js
 import { typeset } from "maisongr-typo";
