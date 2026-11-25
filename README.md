@@ -1,14 +1,16 @@
 # maisongr-typo
 
-**French typography, the Québec way.** The no-break spaces, « guillemets », hours, amounts and ordinals the Office québécois de la langue française (OQLF) prescribes, applied to text, Markdown, HTML and JSON translation files. France's rules on request. A `check` command keeps new copy in line in CI.
+**Français** · [English](README.en.md)
 
-[![npm version](https://img.shields.io/npm/v/maisongr-typo?color=1b1a17)](https://www.npmjs.com/package/maisongr-typo)
+**La typographie française, à la québécoise.** Les espaces insécables, les « guillemets », les heures, les sommes et les ordinaux que prescrit l’Office québécois de la langue française (OQLF), appliqués au texte, au Markdown, au HTML et aux fichiers de traduction JSON. Les règles de la France sur demande. Une commande `check` garde les nouveaux textes conformes dans la CI.
+
+[![npm version](https://img.shields.io/npm/v/maisongr-typo?color=3a0f14)](https://www.npmjs.com/package/maisongr-typo)
 [![CI](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml/badge.svg)](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-1b1a17)](LICENSE)
-![Runtime dependencies: 0](https://img.shields.io/badge/runtime_dependencies-0-1b1a17)
-![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-1b1a17)
+[![Licence : MIT](https://img.shields.io/badge/licence-MIT-3a0f14)](LICENSE)
+![Dépendances à l’exécution : 0](https://img.shields.io/badge/d%C3%A9pendances-0-3a0f14)
+![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-3a0f14)
 
-![A printer's proof of accueil.md: on the left, the French text as written, with proofreader's marks on 8h, 17h, the straight quotes, 2ème and 12535; on the right, the same text after maisongr-typo, every no-break space marked in red; in the margin, the rule behind each correction. Below: npx maisongr-typo check accueil.md, 11 corrections.](.github/assets/hero.png)
+![Une épreuve d’imprimerie de accueil.md : à gauche, le texte tel que rédigé, avec des marques de correction sur les heures, les guillemets droits, l’ordinal et la somme; à droite, le même texte après maisongr-typo, chaque espace insécable marquée en rouge; en marge, la règle derrière chaque correction. En bas : npx maisongr-typo check accueil.md, 11 corrections.](.github/assets/hero.png)
 
 ```js
 import { typeset } from "maisongr-typo";
@@ -17,32 +19,32 @@ typeset(`Vraiment ? "Ouvert" de 8h30 à 22h : 29$, 12535 $ et 15%. L'été... la
 // Vraiment? « Ouvert » de 8 h 30 à 22 h : 29 $, 12 535 $ et 15 %. L’été… la 2e fois!
 ```
 
-The spaces it adds or replaces are no-break spaces (U+00A0), so « 29 $ », « 8 h 30 » and « Note : » never break across two lines.
+Les espaces qu’il ajoute ou remplace sont insécables (U+00A0) : « 29 $ », « 8 h 30 » et « Note : » ne se coupent jamais en fin de ligne.
 
-## Why
+## Pourquoi
 
-French puts spaces where English doesn't, and some of them must never break: a line that starts with « : », « $ » or « » » looks broken. Most French typography tools apply France's rules, which put a space before `;`, `!` and `?`. Québec doesn't:
+Le français met des espaces là où l’anglais n’en met pas, et certaines ne doivent jamais se couper : une ligne qui commence par « : », « $ » ou « » » a l’air cassée. La plupart des outils de typographie française appliquent les règles de la France, qui mettent une espace devant `;`, `!` et `?`. Pas le Québec :
 
-> « L'Office québécois de la langue française opte pour l'absence d'espace devant le point-virgule, le point d'exclamation et le point d'interrogation. »
+> « L’Office québécois de la langue française opte pour l’absence d’espace devant le point-virgule, le point d’exclamation et le point d’interrogation. »
 > [OQLF, Banque de dépannage linguistique](https://vitrinelinguistique.oqlf.gouv.qc.ca/22039/la-typographie/espacement/espacement-avant-et-apres-les-signes-de-ponctuation-et-les-symboles)
 
-This package follows the OQLF by default (`fr-CA`), and France with `locale: "fr-FR"`. It's built from the typography of the [Maison GR](https://www.maisongr.com) products, where it keeps thousands of interface strings in line.
+Ce paquet suit l’OQLF par défaut (`fr-CA`), et la France avec `locale: "fr-FR"`. Il est tiré de la typographie des produits de [Maison GR](https://www.maisongr.com), où il garde des milliers de textes d’interface conformes.
 
-## Install
+## Installation
 
 ```sh
 npm install maisongr-typo
 ```
 
-Or, without installing, on your files:
+Ou, sans rien installer, sur vos fichiers :
 
 ```sh
 npx maisongr-typo check content/
 ```
 
-## The rules
+## Les règles
 
-| Rule | Before | After (fr-CA) | OQLF source |
+| Règle | Avant | Après (fr-CA) | Source OQLF |
 |---|---|---|---|
 | `high-punctuation` | `Vraiment ?` | `Vraiment?` | [22039](https://vitrinelinguistique.oqlf.gouv.qc.ca/22039/la-typographie/espacement/espacement-avant-et-apres-les-signes-de-ponctuation-et-les-symboles) |
 | `colon` | `Note: texte` | `Note : texte` | 22039 |
@@ -53,33 +55,33 @@ npx maisongr-typo check content/
 | `symbol` | `29$`, `15%`, `20°C` | `29 $`, `15 %`, `20 °C` | 22039, [21401](https://vitrinelinguistique.oqlf.gouv.qc.ca/21401/les-abreviations-et-les-symboles/les-symboles/ecriture-des-symboles-dunites-de-mesure) |
 | `dollar-after` | `$29` | `29 $` | [21584](https://vitrinelinguistique.oqlf.gouv.qc.ca/21584/la-typographie/nombres/ecriture-des-sommes-dargent) |
 | `amount-groups` | `12535,75 $` | `12 535,75 $` | [25447](https://vitrinelinguistique.oqlf.gouv.qc.ca/25447/la-typographie/nombres/espacements-dans-les-nombres) |
-| `digit-groups` | `3 000` (ordinary space) | `3 000` (no-break) | [24566](https://vitrinelinguistique.oqlf.gouv.qc.ca/24566/la-typographie/espacement/contextes-exigeant-une-espace-insecable) |
+| `digit-groups` | `3 000` (espace ordinaire) | `3 000` (insécable) | [24566](https://vitrinelinguistique.oqlf.gouv.qc.ca/24566/la-typographie/espacement/contextes-exigeant-une-espace-insecable) |
 | `ordinal` | `2ème`, `1ère`, `1ier` | `2e`, `1re`, `1er` | |
 | `apostrophe` | `l'été` | `l’été` | |
 | `ellipsis` | `...` | `…` | |
 | `space-before-comma` | `oui , merci .` | `oui, merci.` | 22039 |
 
-Spaces before `:` and inside « » are no-break spaces (U+00A0). Each rule replaces the spaces next to what it targets, or adds the one that's missing; it never rewrites words.
+Les espaces devant `:` et à l’intérieur des « » sont insécables (U+00A0). Chaque règle remplace les espaces voisines de ce qu’elle vise, ou ajoute celle qui manque; elle ne réécrit jamais de mots.
 
-## fr-CA and fr-FR
+## fr-CA et fr-FR
 
-| | `fr-CA` (default) | `fr-FR` |
+| | `fr-CA` (par défaut) | `fr-FR` |
 |---|---|---|
-| Before `;` `!` `?` | Nothing (`highPunctuation: "none"`), or a narrow no-break space with `highPunctuation: "narrow"`, which the OQLF accepts | Narrow no-break space (U+202F) |
-| Before `:`, inside « » | No-break space | No-break space |
-| Between digit groups | No-break space | Narrow no-break space |
-| Hours, symbols, ordinals | 8 h 30, 29 $, 2e | 8 h 30, 29 €, 2e |
+| Devant `;` `!` `?` | Rien (`highPunctuation: "none"`), ou une espace fine insécable avec `highPunctuation: "narrow"`, que l’OQLF accepte | Espace fine insécable (U+202F) |
+| Devant `:`, dans les « » | Espace insécable | Espace insécable |
+| Entre les tranches de chiffres | Espace insécable | Espace fine insécable |
+| Heures, symboles, ordinaux | 8 h 30, 29 $, 2e | 8 h 30, 29 €, 2e |
 
-## In code
+## Dans le code
 
 ```js
 import { typeset, check } from "maisongr-typo";
 
 typeset("Prêt ? Oui !");                                  // "Prêt? Oui!"
-typeset("Prêt? Oui!", { locale: "fr-FR" });              // "Prêt ? Oui !" (narrow no-break spaces)
-typeset(markdown, { format: "markdown" });               // text only: never code, link targets or front matter
-typeset(html, { format: "html" });                       // text nodes only: never tags, attributes, <code>, <pre>, <script>
-typeset("Bienvenue chez Toqué!", { keep: ["Toqué!"] });  // a brand's spelling stays as written
+typeset("Prêt? Oui!", { locale: "fr-FR" });              // "Prêt ? Oui !" (espaces fines insécables)
+typeset(markdown, { format: "markdown" });               // le texte seulement : jamais le code, les liens ni l’en-tête
+typeset(html, { format: "html" });                       // les nœuds texte seulement : jamais les balises, attributs, <code>, <pre>, <script>
+typeset("Bienvenue chez Toqué!", { keep: ["Toqué!"] });  // la graphie d’une marque reste telle quelle
 
 check("Il est 8h30 : 29$");
 // [
@@ -89,31 +91,31 @@ check("Il est 8h30 : 29$");
 // ]
 ```
 
-`typeset` is pure and idempotent: running it twice gives the same text, and `check` returns an empty list for anything `typeset` produced.
+`typeset` est pure et idempotente : l’appliquer deux fois donne le même texte, et `check` renvoie une liste vide pour tout ce que `typeset` a produit.
 
 ### Options
 
-| Option | Default | What it does |
+| Option | Par défaut | Effet |
 |---|---|---|
-| `locale` | `"fr-CA"` | `"fr-CA"` (OQLF) or `"fr-FR"` |
-| `format` | `"text"` | `"text"`, `"markdown"` or `"html"` |
-| `highPunctuation` | `"none"` | fr-CA only: `"narrow"` puts a narrow no-break space before `;` `!` `?` |
-| `quotes` | `true` | `"…"` becomes `« … »` |
-| `apostrophes` | `true` | `'` between letters becomes `’` |
-| `ellipsis` | `true` | `...` becomes `…` |
-| `hours` | `true` | `8h30` becomes `8 h 30` |
-| `colonHours` | `false` | `8:30` becomes `8 h 30` too (the OQLF accepts `8:30` in tables and technical text) |
-| `ordinals` | `true` | `2ème` becomes `2e` |
-| `dollarAfter` | `true` | `$29` becomes `29 $` (whole amounts, or with a decimal comma) |
-| `groupFourDigits` | `false` | `1490 $` becomes `1 490 $` (optional for four digits, per the OQLF) |
-| `keep` | `[]` | Spellings to leave as written, such as brand names |
+| `locale` | `"fr-CA"` | `"fr-CA"` (OQLF) ou `"fr-FR"` |
+| `format` | `"text"` | `"text"`, `"markdown"` ou `"html"` |
+| `highPunctuation` | `"none"` | fr-CA seulement : `"narrow"` met une espace fine insécable devant `;` `!` `?` |
+| `quotes` | `true` | `"…"` devient `« … »` |
+| `apostrophes` | `true` | `'` entre deux lettres devient `’` |
+| `ellipsis` | `true` | `...` devient `…` |
+| `hours` | `true` | `8h30` devient `8 h 30` |
+| `colonHours` | `false` | `8:30` devient aussi `8 h 30` (l’OQLF accepte `8:30` dans les tableaux et les textes techniques) |
+| `ordinals` | `true` | `2ème` devient `2e` |
+| `dollarAfter` | `true` | `$29` devient `29 $` (sommes entières, ou avec une virgule décimale) |
+| `groupFourDigits` | `false` | `1490 $` devient `1 490 $` (facultatif pour quatre chiffres, selon l’OQLF) |
+| `keep` | `[]` | Graphies à laisser telles quelles, comme des noms de marque |
 
-## From the command line
+## En ligne de commande
 
 ```sh
-npx maisongr-typo check content/ README.fr.md   # list what needs fixing; exits 1 if anything does
-npx maisongr-typo fix content/                   # fix the files in place
-npx maisongr-typo < in.txt > out.txt             # standard input to standard output
+npx maisongr-typo check content/ README.fr.md   # liste ce qui est à corriger; code de sortie 1 s'il y a quoi que ce soit
+npx maisongr-typo fix content/                   # corrige les fichiers sur place
+npx maisongr-typo < in.txt > out.txt             # de l'entrée standard vers la sortie standard
 ```
 
 ```text
@@ -122,59 +124,59 @@ content/accueil.md:3:19  colon  " :" → "⍽:"  Put a no-break space before the
 2 problems in 1 file. Run "maisongr-typo fix" to fix them.
 ```
 
-`⍽` marks a no-break space and `⸱` a narrow one in reports. The CLI reads `.md`, `.mdx`, `.markdown`, `.html`, `.htm` and `.txt` files, and searches folders for them, skipping `node_modules`, `.git` and build output. Options: the ones above as flags (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` for a machine-readable report, and `--help`.
+Les messages de l’outil sont en anglais, comme la plupart des outils de développement. Dans les rapports, `⍽` marque une espace insécable et `⸱` une espace fine. L’outil lit les fichiers `.md`, `.mdx`, `.markdown`, `.html`, `.htm` et `.txt`, et les cherche dans les dossiers en sautant `node_modules`, `.git` et les dossiers de compilation. Options : celles ci-dessus en drapeaux (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` pour un rapport lisible par une machine, et `--help`.
 
-### Translation files
+### Fichiers de traduction
 
-A JSON file named on the command line has its string values typeset, never its keys. `--only-key fr` limits it to the strings under a key named `fr`, so a file holding both languages keeps its English as written:
+Un fichier JSON nommé sur la ligne de commande voit ses valeurs texte corrigées, jamais ses clés. `--only-key fr` s’en tient aux textes sous une clé nommée `fr`, pour qu’un fichier qui contient les deux langues garde son anglais tel quel :
 
 ```sh
 npx maisongr-typo check locales/fr.json
 npx maisongr-typo fix messages.json --only-key fr
 ```
 
-A file with nothing to fix is left byte for byte; a fixed one keeps its indentation and line endings.
+Un fichier sans rien à corriger reste identique octet pour octet; un fichier corrigé garde son indentation et ses fins de ligne.
 
-## In CI
+## Dans la CI
 
 ```yaml
 - run: npx maisongr-typo check content/ locales/fr.json
 ```
 
-It fails the build on new copy that breaks the rules, and the report says where and what to write instead.
+La compilation échoue sur un nouveau texte qui enfreint les règles, et le rapport dit où, et quoi écrire à la place.
 
-## What it never touches
+## Ce qu’il ne touche jamais
 
-- Links, emails and bare domains: `https://exemple.ca/a?b=1`, `info@exemple.ca`, `maisongr.com/fr`. Punctuation right after a link stays apart from it, so `Voir https://exemple.ca !` keeps its space.
-- HTML entities (`&amp;`, `&nbsp;`) and the spellings in `keep`.
-- In Markdown: front matter, fenced and inline code, link targets and titles, reference definitions, autolinks and HTML tags.
-- In HTML: tags and attributes, comments, and the contents of `<pre>`, `<code>`, `<kbd>`, `<samp>`, `<var>`, `<textarea>`, `<script>`, `<style>`, `<svg>` and `<math>`.
-- English amounts (`$29.99`) and identifiers, years and street numbers (`562498`, `2026`, `10985, rue des Érables`): only amounts with a symbol are grouped.
+- Les liens, les courriels et les noms de domaine : `https://exemple.ca/a?b=1`, `info@exemple.ca`, `maisongr.com/fr`. La ponctuation juste après un lien reste détachée de lui, donc `Voir https://exemple.ca !` garde son espace.
+- Les entités HTML (`&amp;`, `&nbsp;`) et les graphies de `keep`.
+- En Markdown : l’en-tête (front matter), le code en bloc et en ligne, la cible et le titre des liens, les définitions de référence, les liens automatiques et les balises HTML.
+- En HTML : les balises et les attributs, les commentaires, et le contenu de `<pre>`, `<code>`, `<kbd>`, `<samp>`, `<var>`, `<textarea>`, `<script>`, `<style>`, `<svg>` et `<math>`.
+- Les sommes à l’anglaise (`$29.99`), les identifiants, les années et les numéros civiques (`562498`, `2026`, `10985, rue des Érables`) : seules les sommes suivies d’un symbole sont groupées.
 
-## For AI agents
+## Pour les agents d’IA
 
-The package ships an [Agent Skill](skills/maisongr-typo/SKILL.md) that tells a coding agent when and how to run it, and an [`llms.txt`](llms.txt). With Claude Code, Codex, Cursor or any agent that reads skills, copy `skills/maisongr-typo` into the project's skills folder.
+Le paquet fournit une [Agent Skill](skills/maisongr-typo/SKILL.md) qui dit à un agent de programmation quand et comment le lancer, et un [`llms.txt`](llms.txt). Avec Claude Code, Codex, Cursor ou tout agent qui lit les skills, copiez `skills/maisongr-typo` dans le dossier des skills du projet.
 
-## Limits
+## Limites
 
-- It assumes the text is French. Run it on French copy only (in JSON, `--only-key fr` helps).
-- It doesn't correct spelling, accents, capitals or grammar, or choose between `8 h 05` and `8 h 5`: it keeps what you wrote.
-- Ordinals are fixed for numbers written in digits; `1ème` is left alone, since `1er` or `1re` depends on the gender.
-- In HTML, the no-break spaces it adds are characters (U+00A0, U+202F), not `&nbsp;`. Serve the page as UTF-8.
+- Il suppose que le texte est en français. Lancez-le sur du texte français seulement (en JSON, `--only-key fr` aide).
+- Il ne corrige ni l’orthographe, ni les accents, ni les majuscules, ni la grammaire, et ne choisit pas entre `8 h 05` et `8 h 5` : il garde ce que vous avez écrit.
+- Les ordinaux sont corrigés pour les nombres écrits en chiffres; `1ème` est laissé tel quel, puisque `1er` ou `1re` dépend du genre.
+- En HTML, les espaces insécables qu’il ajoute sont des caractères (U+00A0, U+202F), pas des `&nbsp;`. Servez la page en UTF-8.
 
-## Requirements
+## Prérequis
 
-Node.js 20.9 or later, on Linux, macOS and Windows. No runtime dependencies. An ES module: from CommonJS, `require("maisongr-typo")` works on Node 22.12 and later; on Node 20, use `await import("maisongr-typo")`. The CLI works the same everywhere.
+Node.js 20.9 ou plus récent, sur Linux, macOS et Windows. Aucune dépendance à l’exécution. Un module ES : depuis CommonJS, `require("maisongr-typo")` fonctionne à partir de Node 22.12; sur Node 20, utilisez `await import("maisongr-typo")`. L’outil en ligne de commande fonctionne partout de la même façon.
 
-## More from Maison GR
+## Aussi chez Maison GR
 
-Open source from [Maison GR](https://www.maisongr.com), a software studio in Québec City:
+Du logiciel libre de [Maison GR](https://www.maisongr.com), un studio de logiciels de Québec :
 
-- [maisongr-sitemap](https://github.com/maison-gr/maisongr-sitemap): one sitemap, two readers. The XML search engines need, and a page in your site's own design for people.
-- [Maison GR Sitemap for WordPress](https://github.com/maison-gr/maisongr-sitemap-wordpress): the same sitemap for WordPress, in your theme's colours and type.
-- [maisongr-skills](https://github.com/maison-gr/maisongr-skills): one engineering standard for every AI coding agent: Claude Code, Codex, Cursor, Copilot, Gemini CLI.
-- [maisongr-law25](https://github.com/maison-gr/maisongr-law25): your Law 25 privacy impact assessment, next to your code, checked in CI.
+- [maisongr-sitemap](https://github.com/maison-gr/maisongr-sitemap) : un plan de site, deux lecteurs. Le XML dont les moteurs de recherche ont besoin, et une page aux couleurs de votre site pour les gens.
+- [Maison GR Sitemap pour WordPress](https://github.com/maison-gr/maisongr-sitemap-wordpress) : le même plan de site pour WordPress, aux couleurs et aux polices de votre thème.
+- [maisongr-skills](https://github.com/maison-gr/maisongr-skills) : une même norme d’ingénierie pour tous les agents de programmation par IA : Claude Code, Codex, Cursor, Copilot, Gemini CLI.
+- [maisongr-law25](https://github.com/maison-gr/maisongr-law25) : votre évaluation des facteurs relatifs à la vie privée (Loi 25), à côté de votre code, vérifiée dans la CI.
 
-## License
+## Licence
 
-MIT, © Maison GR Inc. The rules cite the OQLF's Banque de dépannage linguistique; its pages are the authority, and this package is not affiliated with the OQLF.
+MIT, © Maison GR Inc. Les règles citent la Banque de dépannage linguistique de l’OQLF; ses pages font autorité, et ce paquet n’est pas affilié à l’OQLF.
