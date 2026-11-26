@@ -2,7 +2,7 @@
 
 **Français** · [English](README.en.md)
 
-**La typographie française, à la québécoise.** Les espaces insécables, les « guillemets », les heures, les sommes et les ordinaux que prescrit l’Office québécois de la langue française (OQLF), appliqués au texte, au Markdown, au HTML, aux fichiers de traduction JSON et aux chaînes françaises du code JavaScript et TypeScript. Les règles de la France sur demande. Une commande `check` garde les nouveaux textes conformes dans la CI.
+**La typographie française, à la québécoise.** Les espaces insécables, les « guillemets », les heures, les sommes et les ordinaux que prescrit l’Office québécois de la langue française (OQLF), appliqués au texte, au Markdown, au HTML, aux fichiers de traduction (JSON, iOS, Android, gettext, XLIFF, YAML, Java, Flutter) et aux chaînes françaises du code JavaScript et TypeScript. Les règles de la France sur demande. Une commande `check` garde les nouveaux textes conformes dans la CI.
 
 [![npm version](https://img.shields.io/npm/v/maisongr-typo?color=3a0f14)](https://www.npmjs.com/package/maisongr-typo)
 [![CI](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml/badge.svg)](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml)
@@ -153,6 +153,25 @@ npx maisongr-typo check src --code                # tout le code d’un dossier,
 ```
 
 Dans un dossier, les fichiers de test (`*.test.ts`, `__tests__/`…) ne sont jamais lus comme du code : leurs chaînes sont ce qu’ils comparent.
+
+### iOS, Android et les autres formats de traduction
+
+| Plateforme | Fichier | Ce qui est corrigé |
+|---|---|---|
+| iOS, macOS | `fr.lproj/Localizable.strings` | les valeurs, jamais les clés ni les commentaires |
+| Xcode | `Localizable.xcstrings` | les localisations françaises seulement (`fr`, `fr-CA`), pluriels compris |
+| Android | `res/values-fr/strings.xml` | `<string>`, `<plurals>`, `<string-array>`; `translatable="false"` et CDATA laissés tels quels |
+| gettext | `fr.po`, `fr/LC_MESSAGES/*.po` | les `msgstr`, jamais les `msgid` ni l’en-tête |
+| XLIFF | `.xlf`, `.xliff` | les `<target>`, jamais les `<source>` |
+| YAML (Rails, i18next…) | `config/locales/fr.yml` | les valeurs, en clair, entre guillemets ou en bloc |
+| Java | `messages_fr.properties` | les valeurs; les `\u00e9` restent des `\u` dans un fichier ASCII |
+| Flutter | `app_fr.arb` | les messages, jamais les métadonnées `@` ni la syntaxe ICU |
+
+Un fichier est français par son chemin (`fr.lproj/`, `values-fr/`, `fr/`, `_fr`, `fr.yml`) ou par ce qu’il déclare (`Language: fr` d’un `.po`, `target-language` d’un XLIFF, `@@locale` d’un `.arb`, la racine `fr:` d’un YAML). Un fichier d’une autre langue reste identique octet pour octet, et un fichier corrigé ne change que ses textes : chaque format garde ses échappements (`\'` d’Android, `\"` d’iOS, `''` de MessageFormat). Dans un dossier, les fichiers de traduction français sont trouvés, et les `.xcstrings` toujours.
+
+```sh
+npx maisongr-typo check ios/ android/app/src/main/res config/locales
+```
 
 ## Dans la CI
 

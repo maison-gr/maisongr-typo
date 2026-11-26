@@ -6,6 +6,12 @@ All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](ht
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-11-26
+
+### Added
+
+- Mobile and other translation formats, French files only: iOS and macOS `Localizable.strings` and Xcode `.xcstrings` (French localizations only, plurals included), Android `strings.xml` (`<string>`, `<plurals>`, `<string-array>`), gettext `.po` (`msgstr` only), XLIFF (`<target>` only), YAML (Rails, i18next), Java `.properties` and Flutter `.arb`. A file is French by its path (`fr.lproj/`, `values-fr/`, `fr/LC_MESSAGES/`, `_fr`, `fr.yml`) or by what it declares. Keys, comments, metadata and each format's escapes stay as written.
+
 ## [1.0.3] - 2026-11-26
 
 ### Fixed

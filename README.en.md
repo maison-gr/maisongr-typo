@@ -2,7 +2,7 @@
 
 [Français](README.md) · **English**
 
-**French typography, the Québec way.** The no-break spaces, « guillemets », hours, amounts and ordinals the Office québécois de la langue française (OQLF) prescribes, applied to text, Markdown, HTML, JSON translation files and the French strings of JavaScript and TypeScript code. France's rules on request. A `check` command keeps new copy in line in CI.
+**French typography, the Québec way.** The no-break spaces, « guillemets », hours, amounts and ordinals the Office québécois de la langue française (OQLF) prescribes, applied to text, Markdown, HTML, translation files (JSON, iOS, Android, gettext, XLIFF, YAML, Java, Flutter) and the French strings of JavaScript and TypeScript code. France's rules on request. A `check` command keeps new copy in line in CI.
 
 [![npm version](https://img.shields.io/npm/v/maisongr-typo?color=3a0f14)](https://www.npmjs.com/package/maisongr-typo)
 [![CI](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml/badge.svg)](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml)
@@ -153,6 +153,25 @@ npx maisongr-typo check src --code                # all the code of a folder, it
 ```
 
 In a folder, test files (`*.test.ts`, `__tests__/`…) are never read as code: their strings are what they compare against.
+
+### iOS, Android and other translation formats
+
+| Platform | File | What is typeset |
+|---|---|---|
+| iOS, macOS | `fr.lproj/Localizable.strings` | values, never keys or comments |
+| Xcode | `Localizable.xcstrings` | the French localizations only (`fr`, `fr-CA`), plurals included |
+| Android | `res/values-fr/strings.xml` | `<string>`, `<plurals>`, `<string-array>`; `translatable="false"` and CDATA left alone |
+| gettext | `fr.po`, `fr/LC_MESSAGES/*.po` | `msgstr`, never `msgid` or the header |
+| XLIFF | `.xlf`, `.xliff` | `<target>`, never `<source>` |
+| YAML (Rails, i18next…) | `config/locales/fr.yml` | values: plain, quoted or block |
+| Java | `messages_fr.properties` | values; `\u00e9` stays a `\u` escape in an ASCII file |
+| Flutter | `app_fr.arb` | messages, never `@` metadata or ICU syntax |
+
+A file is French by its path (`fr.lproj/`, `values-fr/`, `fr/`, `_fr`, `fr.yml`) or by what it declares (a `.po`'s `Language: fr`, an XLIFF's `target-language`, an `.arb`'s `@@locale`, a YAML root `fr:`). Another language's file is left byte for byte, and a fixed file changes only its text: each format keeps its escapes (Android's `\'`, iOS's `\"`, MessageFormat's `''`). In a folder, French translation files are found, and `.xcstrings` always.
+
+```sh
+npx maisongr-typo check ios/ android/app/src/main/res config/locales
+```
 
 ## In CI
 

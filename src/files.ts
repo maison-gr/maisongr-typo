@@ -5,6 +5,7 @@ import { readdirSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { check, typeset, type Issue } from "./index.js";
 import { encode, isFrenchFile, isOtherLanguageFile, literals, type Literal } from "./javascript.js";
+import { isFrenchCode, isFrenchTranslation, languageOfPath, segments, translationFormat } from "./formats.js";
 
 /**
  * Joins the chunks of a template literal: a private-use character no text holds and no rule touches. Not U+E000 or
@@ -13,7 +14,7 @@ import { encode, isFrenchFile, isOtherLanguageFile, literals, type Literal } fro
 const SLOT = "";
 import type { Format, Options } from "./options.js";
 
-export type Kind = Format | "json" | "javascript";
+export type Kind = Format | "json" | "javascript" | "translation" | "xcstrings" | "arb";
 
 /** JavaScript and TypeScript: their French strings are typeset, the code never. */
 const CODE = new Set([".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"]);
@@ -29,6 +30,9 @@ export function kindOf(path: string): Kind {
   const ext = extname(path).toLowerCase();
   if (ext === ".md" || ext === ".mdx" || ext === ".markdown") return "markdown";
   if (ext === ".html" || ext === ".htm") return "html";
+  if (ext === ".xcstrings") return "xcstrings";
+  if (ext === ".arb") return "arb";
+  if (translationFormat(path)) return "translation";
   if (ext === ".json") return "json";
   if (CODE.has(ext)) return "javascript";
   return "text";
@@ -49,7 +53,10 @@ export function expand(paths: readonly string[], code = false): string[] {
       } else {
         const ext = extname(name).toLowerCase();
         const isCode = CODE.has(ext) && (isFrenchFile(full) || (code && !isOtherLanguageFile(full))) && !/\.d\.[cm]?ts$/.test(name) && !inTests && !TEST_FILE.test(name);
-        if (WALKED.has(ext) || isCode) out.push(full);
+        // Translation files: the French ones (fr.lproj/, values-fr/, fr.po, fr.yml…), and string catalogs, whose French
+        // localizations only are read.
+        const isTranslation = ext === ".xcstrings" || ((translationFormat(full) || ext === ".arb") && isFrenchCode(languageOfPath(full)));
+        if (WALKED.has(ext) || isCode || isTranslation) out.push(full);
       }
     }
   };
@@ -72,6 +79,17 @@ export function processText(source: string, kind: Kind, options: Options, onlyKe
   const bom = source.startsWith("﻿") ? "﻿" : "";
   const body = bom ? source.slice(1) : source;
   if (kind === "javascript") return processCode(source, options, path);
+  if (kind === "translation") return processTranslation(source, options, path);
+  const bomLength = source.charCodeAt(0) === 0xfeff ? 1 : 0;
+  if (kind === "xcstrings") {
+    // An Xcode string catalog holds every language: only the values of its French localizations.
+    return processJson(source, bomLength, options, undefined, (p) => p[2] === "localizations" && isFrenchCode(p[3]) && p.at(-1) === "value");
+  }
+  if (kind === "arb") {
+    // Flutter: a French file (app_fr.arb, or "@@locale": "fr"); its @ entries are metadata, not text.
+    const french = isFrenchCode(languageOfPath(path)) || /"@@locale"\s*:\s*"fr/i.test(source);
+    return processJson(source, bomLength, options, undefined, (p) => french && !p.some((k) => k.startsWith("@")));
+  }
   if (kind !== "json") {
     const o = { ...options, format: kind };
     return { issues: check(body, o), output: bom + typeset(body, o) };
@@ -150,7 +168,7 @@ const HTML_TAG = /<\/?[a-zA-Z][\w-]*[\s/>]/;
  * A JSON file: each string value typeset in place (keys never), under `onlyKey` when it is given. Every other byte stays
  * as written, so a fixed file's diff shows only the strings that changed. One pass, a stack of open objects and arrays.
  */
-function processJson(source: string, from: number, options: Options, onlyKey?: string): Result {
+function processJson(source: string, from: number, options: Options, onlyKey?: string, select?: (path: string[]) => boolean): Result {
   JSON.parse(source.slice(from)); // an invalid file fails here, as before
   // Each open object or array: its own key or index only. The full path is built from the stack when an issue needs it:
   // a path copied into every frame grows with the square of the depth.
@@ -177,7 +195,7 @@ function processJson(source: string, from: number, options: Options, onlyKey?: s
       while (j < source.length && source[j] !== '"') j += source[j] === "\\" ? 2 : 1;
       const value = JSON.parse(source.slice(i, j + 1)) as string;
       if (top?.kind === "object" && top.expectKey) top.key = value;
-      else if (childInside(top)) {
+      else if (childInside(top) && (!select || select(pathHere()))) {
         const o = { ...options, format: (HTML_TAG.test(value) ? "html" : "text") as Format };
         const fixed = typeset(value, o);
         if (fixed !== value) {
@@ -188,6 +206,30 @@ function processJson(source: string, from: number, options: Options, onlyKey?: s
       }
       i = j;
     }
+  }
+  if (!edits.length) return { issues, output: source };
+  let output = "";
+  let last = 0;
+  for (const [a, b, text] of edits) { output += source.slice(last, a) + text; last = b; }
+  return { issues, output: output + source.slice(last) };
+}
+/** A translation file (.strings, strings.xml, .po, XLIFF, YAML, .properties): its French text typeset in place. */
+function processTranslation(source: string, options: Options, path: string): Result {
+  const format = translationFormat(path)!;
+  if (!isFrenchTranslation(path, format, source)) return { issues: [], output: source };
+  const lines = lineStarts(source);
+  const issues: FileIssue[] = [];
+  const edits: [number, number, string][] = [];
+  for (const seg of segments(format, source)) {
+    const o = { ...options, format: (seg.html || HTML_TAG.test(seg.value) ? "html" : "text") as Format };
+    const fixed = typeset(seg.value, o);
+    if (fixed === seg.value) continue;
+    for (const issue of check(seg.value, o)) {
+      const at = seg.start + Math.min(issue.index, seg.end - seg.start);
+      const line = lineOf(lines, at);
+      issues.push({ ...issue, index: at, line, column: at - lines[line - 1]! + 1 });
+    }
+    edits.push([seg.start, seg.end, seg.encode(fixed)]);
   }
   if (!edits.length) return { issues, output: source };
   let output = "";
