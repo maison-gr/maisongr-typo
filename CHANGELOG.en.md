@@ -6,6 +6,13 @@ All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](ht
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-25
+
+### Added
+
+- JavaScript and TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`): French strings are typeset, the code stays byte for byte as it was. A string is French in a French file (`fr.ts`, `fr-CA.js`, an `fr/` folder), under an `fr` key, or when it reads as French. Keys, import paths, `${…}` expressions and regular expressions are never touched, and HTML in a string is typeset as HTML. Tried on three real projects (close to 1,000 files): none loses its syntax.
+- `--code` reads all the code in a folder; without it, a folder gives only its French files. Test files are never read as code.
+
 ## [1.0.0] - 2026-11-25
 
 ### Added

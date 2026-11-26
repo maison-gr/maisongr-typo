@@ -6,6 +6,13 @@ Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Cha
 
 ## [Non publié]
 
+## [1.0.1] - 2026-11-25
+
+### Ajouté
+
+- JavaScript et TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts`) : les chaînes françaises sont corrigées, le code reste identique octet pour octet. Une chaîne est française dans un fichier français (`fr.ts`, `fr-CA.js`, un dossier `fr/`), sous une clé `fr`, ou quand elle se lit en français. Les clés, les chemins d’import, les expressions `${…}` et les expressions régulières ne sont jamais touchés, et le HTML d’une chaîne est corrigé comme du HTML. Essayé sur trois vrais projets (près de 1 000 fichiers) : aucun ne perd sa syntaxe.
+- `--code` lit tout le code d’un dossier; sans lui, un dossier ne fournit que ses fichiers français. Les fichiers de test ne sont jamais lus comme du code.
+
 ## [1.0.0] - 2026-11-25
 
 ### Ajouté

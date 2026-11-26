@@ -1,6 +1,6 @@
 ---
 name: maisongr-typo
-description: Apply or check French typography (Québec's OQLF rules by default, France's on request) in text, Markdown, HTML and JSON translation files with the maisongr-typo package. Use when writing or reviewing French copy, French UI strings or a fr.json file, when the user mentions espaces insécables, guillemets « », French spacing before : ; ! ?, Québec French typography or OQLF, or when French text shows a line starting with « : », « ? » or « $ ».
+description: Apply or check French typography (Québec's OQLF rules by default, France's on request) in text, Markdown, HTML, JSON translation files and the French strings of JavaScript/TypeScript code with the maisongr-typo package. Use when writing or reviewing French copy, French UI strings or a fr.json file, when the user mentions espaces insécables, guillemets « », French spacing before : ; ! ?, Québec French typography or OQLF, or when French text shows a line starting with « : », « ? » or « $ ».
 license: MIT
 ---
 
@@ -17,6 +17,7 @@ npx maisongr-typo check <files or folders> --json
 It prints `{ ok, files, issues, report: [{ file, issues: [{ rule, message, line, column, found, expected, key? }], fixed }] }` and exits 1 when something needs fixing. Exit 2 is a usage error.
 
 - Markdown, HTML and `.txt` files are found in folders; JSON files are read only when named.
+- JavaScript/TypeScript: French files (fr.ts, locales/fr/…) are found in folders; `--code` reads all code in a folder, its French strings only. Keys, imports and `${…}` are never touched.
 - For a translation file holding several languages: `--only-key fr`.
 - For France: `--locale fr-FR`. For a narrow no-break space before ; ! ? in Québec: `--narrow`.
 - A brand written with a mark French would space (`Toqué!`, `Yahoo!`): `--keep "Toqué!,Yahoo!"`.

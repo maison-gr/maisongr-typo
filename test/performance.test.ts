@@ -39,3 +39,27 @@ describe("performance", () => {
     });
   }
 });
+
+// The JavaScript reader (src/javascript.ts) on the inputs that slow a scanner: unclosed strings, templates, comments and
+// regular expressions, deep ${…} nesting, and keys without values.
+describe("JavaScript files", async () => {
+  const { processText } = await import("../src/files.js");
+  const code: Record<string, string> = {
+    "unclosed strings": '= "a '.repeat(N / 5),
+    "unclosed templates": "`a ${".repeat(N / 5),
+    "nested templates": "`${".repeat(N / 3),
+    "unclosed comments": "/* a ".repeat(N / 5),
+    "regex-like slashes": "= /a".repeat(N / 4),
+    "keys without colons": '{ "a" '.repeat(N / 6),
+    "spaces before a colon": `{ "fr"${" ".repeat(N)}`,
+    "French strings": `x = "C'est l'été : oui !"; `.repeat(N / 25),
+    "JSX apostrophes": "<p>l'été d'abord</p>".repeat(N / 20),
+  };
+  for (const [name, source] of Object.entries(code)) {
+    it(name, () => {
+      const started = performance.now();
+      processText(source, "javascript", {}, undefined, "fr.ts");
+      expect(performance.now() - started).toBeLessThan(3000);
+    });
+  }
+});
