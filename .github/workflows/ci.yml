@@ -61,7 +61,7 @@ jobs:
       - run: npm ci
       # npm quietly rewrites a package.json it finds invalid when publishing (it once dropped the CLI's bin). Fail instead.
       - run: npm pkg fix && git diff --exit-code package.json
-      # prepack builds dist; the listing shows exactly what npm would publish.
+      # prepare builds dist; the listing shows exactly what npm would publish.
       - run: npm pack --dry-run
 
   # The three ways to run it without writing code, each on a small French site: the GitHub Action (action.yml),

@@ -38,7 +38,7 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "prepack": "npm run build"
+    "prepare": "node scripts/prepare.mjs"
   },
   "publishConfig": {
     "access": "public"

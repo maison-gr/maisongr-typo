@@ -10,7 +10,7 @@ branding:
 
 inputs:
   paths:
-    description: Files and folders to read, separated by spaces or new lines.
+    description: "Files and folders to read, separated by spaces or new lines."
     default: "."
   command:
     description: "`check` (fails on any problem) or `fix` (rewrites the files; commit them in a later step)."
@@ -25,16 +25,16 @@ inputs:
     description: "`true`: read every JavaScript and TypeScript file in the folders, not only French ones."
     default: "false"
   keep:
-    description: Spellings to leave as written, separated by commas (for example `Toqué!,Yahoo!`).
+    description: "Spellings to leave as written, separated by commas (for example `Toqué!,Yahoo!`)."
     default: ""
   only-key:
     description: "JSON: only the strings under a key with this name (for example `fr`)."
     default: ""
   args:
-    description: Other flags, separated by spaces (for example `--colon-hours --group-four-digits`).
+    description: "Other flags, separated by spaces (for example `--colon-hours --group-four-digits`)."
     default: ""
   version:
-    description: The npm version to run. Empty: the version this action was tagged with.
+    description: "The npm version to run. Empty: the version this action was tagged with."
     default: ""
 
 runs:

@@ -21,5 +21,5 @@ COPY --from=build /src/dist ./dist
 COPY package.json LICENSE ./
 USER node
 WORKDIR /work
+# No arguments: the help, or standard input typeset to standard output (echo 'Prêt ?' | docker run -i …).
 ENTRYPOINT ["node", "/app/dist/cli.js"]
-CMD ["--help"]
