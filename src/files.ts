@@ -4,7 +4,7 @@
 import { readdirSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 import { check, typeset, type Issue } from "./index.js";
-import { encode, isFrenchFile, literals, type Literal } from "./javascript.js";
+import { encode, isFrenchFile, isOtherLanguageFile, literals, type Literal } from "./javascript.js";
 
 /**
  * Joins the chunks of a template literal: a private-use character no text holds and no rule touches. Not U+E000 or
@@ -48,7 +48,7 @@ export function expand(paths: readonly string[], code = false): string[] {
         if (!SKIP.has(name)) walk(full, inTests || TEST_DIRS.has(name));
       } else {
         const ext = extname(name).toLowerCase();
-        const isCode = CODE.has(ext) && (code || isFrenchFile(full)) && !/\.d\.[cm]?ts$/.test(name) && !inTests && !TEST_FILE.test(name);
+        const isCode = CODE.has(ext) && (isFrenchFile(full) || (code && !isOtherLanguageFile(full))) && !/\.d\.[cm]?ts$/.test(name) && !inTests && !TEST_FILE.test(name);
         if (WALKED.has(ext) || isCode) out.push(full);
       }
     }
@@ -76,33 +76,13 @@ export function processText(source: string, kind: Kind, options: Options, onlyKe
     const o = { ...options, format: kind };
     return { issues: check(body, o), output: bom + typeset(body, o) };
   }
-  const data: unknown = JSON.parse(body);
-  const issues: FileIssue[] = [];
-  const o = { ...options, format: "text" as const };
-  const visit = (value: unknown, path: string[], inside: boolean): unknown => {
-    if (typeof value === "string") {
-      if (!inside) return value;
-      for (const issue of check(value, o)) issues.push({ ...issue, key: path.join(".") });
-      return typeset(value, o);
-    }
-    if (Array.isArray(value)) return value.map((v, i) => visit(v, [...path, String(i)], inside));
-    if (value && typeof value === "object") {
-      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, visit(v, [...path, k], inside || k === onlyKey)]));
-    }
-    return value;
-  };
-  const fixed = visit(data, [], !onlyKey);
-  const indent = body.match(/^[\[{]\r?\n([ \t]+)/)?.[1] ?? "  ";
-  const newline = body.includes("\r\n") ? "\r\n" : "\n";
-  let output = JSON.stringify(fixed, null, indent);
-  if (newline !== "\n") output = output.replace(/\n/g, newline);
-  if (/\r?\n$/.test(body)) output += newline;
-  // Nothing to change: keep the file byte for byte, whatever its formatting.
-  return { issues, output: issues.length ? bom + output : source };
+  return processJson(source, bom.length, options, onlyKey);
 }
 
 /** A JS/TS file: each French string typeset in place, everything else kept byte for byte. */
 function processCode(source: string, options: Options, path: string): Result {
+  // A file for another language (es.ts, locales/de/…) holds no French, even when it is named on the command line.
+  if (!isFrenchFile(path) && isOtherLanguageFile(path)) return { issues: [], output: source };
   const lines = lineStarts(source);
   const issues: FileIssue[] = [];
   const edits: { start: number; end: number; text: string }[] = [];
@@ -137,7 +117,7 @@ function processCode(source: string, options: Options, path: string): Result {
       const line = lineOf(lines, at);
       issues.push({ ...issue, index: at, line, column: at - lines[line - 1]! + 1 });
     }
-    unit.forEach((lit, k) => { if (parts[k] !== lit.value) edits.push({ start: lit.start, end: lit.end, text: encode(parts[k]!, lit.quote) }); });
+    unit.forEach((lit, k) => { if (parts[k] !== lit.value) edits.push({ start: lit.start, end: lit.end, text: encode(parts[k]!, lit.quote, lit.raw) }); });
   }
   if (!edits.length) return { issues, output: source };
   edits.sort((a, b) => a.start - b.start);
@@ -162,4 +142,56 @@ function lineOf(starts: number[], index: number): number {
     else hi = mid - 1;
   }
   return lo + 1;
+}
+/** A string holding a tag (<b>, <link href="…">): typeset as HTML, so its tags and attributes stay as written. */
+const HTML_TAG = /<\/?[a-zA-Z][\w-]*[\s/>]/;
+
+/**
+ * A JSON file: each string value typeset in place (keys never), under `onlyKey` when it is given. Every other byte stays
+ * as written, so a fixed file's diff shows only the strings that changed. One pass, a stack of open objects and arrays.
+ */
+function processJson(source: string, from: number, options: Options, onlyKey?: string): Result {
+  JSON.parse(source.slice(from)); // an invalid file fails here, as before
+  // Each open object or array: its own key or index only. The full path is built from the stack when an issue needs it:
+  // a path copied into every frame grows with the square of the depth.
+  type Frame = { kind: "object" | "array"; key: string | null; index: number; expectKey: boolean; inside: boolean };
+  const stack: Frame[] = [];
+  const issues: FileIssue[] = [];
+  const edits: [number, number, string][] = [];
+  const pathHere = () => stack.map((frame) => (frame.kind === "object" ? frame.key ?? "" : String(frame.index)));
+  const childInside = (top: Frame | undefined) => (top ? top.inside || (top.kind === "object" && top.key === onlyKey) : !onlyKey);
+  for (let i = from; i < source.length; i++) {
+    const c = source[i];
+    const top = stack.at(-1);
+    if (c === "{" || c === "[") {
+      stack.push({ kind: c === "{" ? "object" : "array", key: null, index: 0, expectKey: c === "{", inside: childInside(top) });
+    } else if (c === "}" || c === "]") {
+      stack.pop();
+    } else if (c === ",") {
+      if (top?.kind === "object") top.expectKey = true;
+      else if (top) top.index++;
+    } else if (c === ":") {
+      if (top) top.expectKey = false;
+    } else if (c === '"') {
+      let j = i + 1;
+      while (j < source.length && source[j] !== '"') j += source[j] === "\\" ? 2 : 1;
+      const value = JSON.parse(source.slice(i, j + 1)) as string;
+      if (top?.kind === "object" && top.expectKey) top.key = value;
+      else if (childInside(top)) {
+        const o = { ...options, format: (HTML_TAG.test(value) ? "html" : "text") as Format };
+        const fixed = typeset(value, o);
+        if (fixed !== value) {
+          const key = pathHere().join(".");
+          for (const issue of check(value, o)) issues.push({ ...issue, key });
+          edits.push([i, j + 1, JSON.stringify(fixed)]);
+        }
+      }
+      i = j;
+    }
+  }
+  if (!edits.length) return { issues, output: source };
+  let output = "";
+  let last = 0;
+  for (const [a, b, text] of edits) { output += source.slice(last, a) + text; last = b; }
+  return { issues, output: output + source.slice(last) };
 }

@@ -31,6 +31,18 @@ describe("JSON", () => {
     expect(processText(tabbed, "json", {}).output).toBe(`{\n\t"a": "x${NBSP}:"\n}`);
   });
 
+  // Found in Rehearse's messages/fr.json (26 Nov 2026): the file was re-serialized, so arrays written on one line were
+  // spread out and the diff showed hundreds of lines that hadn't changed.
+  it("changes only the strings it fixes: every other byte of the file stays as written", () => {
+    const source = `{\n  "a": ["Prêt ?", "Oui"],   "b": {"c":"d'accord", "e": "\\u00e9t\\u00e9"},\n  "f": [1,2,3]\n}`;
+    expect(processText(source, "json", {}).output).toBe(`{\n  "a": ["Prêt?", "Oui"],   "b": {"c":"d’accord", "e": "\\u00e9t\\u00e9"},\n  "f": [1,2,3]\n}`);
+  });
+
+  it("keeps the tags of a rich message (next-intl) as written", () => {
+    const source = `{"m": "Lisez <link href=\\"/x\\">nos conditions</link> : c'est \\"court\\"."}`;
+    expect(processText(source, "json", {}).output).toBe(`{"m": "Lisez <link href=\\"/x\\">nos conditions</link>${NBSP}: c’est «${NBSP}court${NBSP}»."}`);
+  });
+
   it("keeps a byte order mark", () => {
     expect(processText("﻿Prêt ?", "text", {}).output).toBe("﻿Prêt?");
   });

@@ -6,6 +6,16 @@ All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](ht
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-11-26
+
+### Fixed
+
+- A string in Spanish, Italian, Portuguese, German, Dutch or Arabic is no longer read as French: a file named for another language (`es.ts`, `locales/de/`) and another language's key (`es:`, `"pt-BR":`) never are, and a string must read as French more than as any of those languages. Found in Resistaa, in ten languages.
+- Code held in a string (CSS in a template) is never typeset, and a string clearly in another language is left, even under an `fr` key.
+- A fixed JSON file keeps every byte that isn't fixed text: its formatting no longer changes. A message's tags (`<link>`, `<b>`) stay as written.
+- A template written with `\n` escapes keeps them.
+- A path that doesn't exist is reported plainly.
+
 ## [1.0.2] - 2026-11-26
 
 ### Fixed

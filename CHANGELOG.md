@@ -6,6 +6,16 @@ Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Cha
 
 ## [Non publié]
 
+## [1.0.3] - 2026-11-26
+
+### Corrigé
+
+- Une chaîne en espagnol, en italien, en portugais, en allemand, en néerlandais ou en arabe n’est plus lue comme du français : un fichier nommé pour une autre langue (`es.ts`, `locales/de/`) et une clé d’une autre langue (`es:`, `"pt-BR":`) ne le sont jamais, et une chaîne doit se lire en français plus qu’en chacune de ces langues. Trouvé dans Resistaa, en dix langues.
+- Le code tenu dans une chaîne (du CSS dans un gabarit) n’est jamais corrigé, et une chaîne clairement dans une autre langue reste telle quelle, même sous une clé `fr`.
+- Un fichier JSON corrigé garde chaque octet qui n’est pas un texte corrigé : sa mise en forme ne change plus. Les balises d’un message (`<link>`, `<b>`) restent telles quelles.
+- Un gabarit écrit avec des `\n` les garde.
+- Un chemin qui n’existe pas est signalé clairement.
+
 ## [1.0.2] - 2026-11-26
 
 ### Corrigé

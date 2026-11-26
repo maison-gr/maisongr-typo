@@ -4,7 +4,7 @@
 // maisongr-typo < in.txt > out.txt          typesets standard input
 // Exit codes: 0 nothing to fix (or fixed), 1 problems found by check, 2 a usage error or a bug.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { expand, kindOf, processText, type FileIssue, type Kind } from "./files.js";
 import type { Options } from "./options.js";
 
@@ -109,6 +109,7 @@ function main(argv: string[]): number {
   }
 
   const report: { file: string; issues: FileIssue[]; fixed: boolean }[] = [];
+  for (const p of args.paths) if (!existsSync(p)) throw new Usage(`${p} does not exist`);
   for (const file of expand(args.paths, args.code)) {
     const source = readFileSync(file, "utf8");
     const { issues, output } = processText(source, kindOf(file), args.options, args.onlyKey, file);
