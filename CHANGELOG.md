@@ -6,6 +6,14 @@ Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Cha
 
 ## [Non publié]
 
+## [1.0.2] - 2026-11-26
+
+### Corrigé
+
+- Un attribut écrit dans un texte (`type="text/css"`) reste tel quel : ses guillemets droits ne sont pas une citation.
+- « on » et « son » ne comptent plus comme des mots français : ce sont aussi des mots anglais, et « 50 % on signing, 50 % on delivery » était lu comme du français.
+- Un en-tête HTTP nommé dans un texte (`Sec-Fetch-Dest: document`, `Content-Type: text/html`) reste tel quel; un nom de lieu (« Saint-Jean-Baptiste : fête ») est toujours corrigé.
+
 ## [1.0.1] - 2026-11-25
 
 ### Ajouté

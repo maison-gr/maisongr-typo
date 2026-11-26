@@ -119,6 +119,17 @@ describe("what it never touches", () => {
     expect(typeset("Toqué!: le menu", { keep: ["Toqué!"] })).toBe(s("Toqué!_: le menu"));
   });
 
+  // Found in maisonGR's guides (25 Nov 2026): an HTTP header named in French prose.
+  it("leaves HTTP header names as written, and still typesets a French place name", () => {
+    expect(typeset("le navigateur envoie Sec-Fetch-Dest: document, et Content-Type: text/html")).toBe("le navigateur envoie Sec-Fetch-Dest: document, et Content-Type: text/html");
+    expect(typeset("Saint-Jean-Baptiste: fête")).toBe(s("Saint-Jean-Baptiste_: fête"));
+  });
+
+  // Found in maisonGR's guides: an attribute quoted in prose is code, not a quotation.
+  it("leaves name=\"value\" as written, and still makes quotations « »", () => {
+    expect(typeset('xml-stylesheet avec type="text/css" n’est pas retiré, dit "Chrome"')).toBe(s('xml-stylesheet avec type="text/css" n’est pas retiré, dit «_Chrome_»'));
+  });
+
   it("leaves HTML entities, and times in tables", () => {
     expect(typeset("A &amp; B&nbsp;!")).toBe("A &amp; B&nbsp;!");
     expect(typeset("12:30")).toBe("12:30");

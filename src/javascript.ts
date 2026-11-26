@@ -193,7 +193,8 @@ export function encode(value: string, quote: "'" | '"' | "`"): string {
   return out;
 }
 
-const FRENCH_WORDS = new Set(["le", "la", "les", "des", "du", "de", "un", "une", "et", "est", "pour", "vous", "nous", "avec", "dans", "sur", "pas", "ne", "que", "qui", "au", "aux", "votre", "vos", "notre", "nos", "ce", "cette", "ces", "son", "sa", "ses", "il", "elle", "ils", "elles", "on", "ou", "mais", "plus", "tout", "tous", "sont", "être", "avoir", "à", "en", "leur", "très", "déjà", "chez", "par", "sans", "aussi", "comme", "même", "votre", "ici", "voici", "bonjour", "merci"]);
+// Not "on" or "son": English words too ("50% on signing").
+const FRENCH_WORDS = new Set(["le", "la", "les", "des", "du", "de", "un", "une", "et", "est", "pour", "vous", "nous", "avec", "dans", "sur", "pas", "ne", "que", "qui", "au", "aux", "votre", "vos", "notre", "nos", "ce", "cette", "ces", "sa", "ses", "il", "elle", "ils", "elles", "ou", "mais", "plus", "tout", "tous", "sont", "être", "avoir", "à", "en", "leur", "très", "déjà", "chez", "par", "sans", "aussi", "comme", "même", "votre", "ici", "voici", "bonjour", "merci"]);
 const ENGLISH_WORDS = new Set(["the", "and", "is", "are", "you", "your", "for", "with", "to", "of", "on", "this", "that", "it", "be", "we", "our", "not", "or", "at", "by", "from", "an", "as", "can", "will", "have", "has", "was", "were", "my", "all", "more", "here", "please", "thanks", "hello", "what", "how", "when", "why", "if"]);
 
 /**
