@@ -10,7 +10,7 @@
 ![Runtime dependencies: 0](https://img.shields.io/badge/runtime_dependencies-0-3a0f14)
 ![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-3a0f14)
 
-![A printer's proof of accueil.md: on the left, the French text as written, with proofreader's marks on 8h, 17h, the straight quotes, 2ème and 12535; on the right, the same text after maisongr-typo, every no-break space marked in red; in the margin, the rule behind each correction. Below: npx maisongr-typo check accueil.md, 11 corrections.](.github/assets/hero.png)
+![Maison GR open source, 03: maisongr-typo. French typography, the Québec way. Next to it, the command at work: the space before a colon, an apostrophe and an hour fixed in two files, then check finds no problems.](.github/assets/hero.jpg)
 
 ```js
 import { typeset } from "maisongr-typo";
