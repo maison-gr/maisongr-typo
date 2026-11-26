@@ -16,6 +16,8 @@ const hostile: Record<string, string> = {
   "colons": "a :".repeat(N / 3),
   "header names, no colon": `Sec${"-Fetch".repeat(N / 6)}`,
   "header names": "X-A".repeat(N / 3),
+  "attributes, unclosed": 'x="'.repeat(N / 3),
+  "attribute, long": `x="${"a".repeat(N)}`,
   "hours": "8h".repeat(N / 2),
   "unclosed backticks": "`a ".repeat(N / 3),
   "unclosed tags": "<a ".repeat(N / 3),

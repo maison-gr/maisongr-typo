@@ -125,6 +125,11 @@ describe("what it never touches", () => {
     expect(typeset("Saint-Jean-Baptiste: fête")).toBe(s("Saint-Jean-Baptiste_: fête"));
   });
 
+  // Found in maisonGR's guides: an attribute quoted in prose is code, not a quotation.
+  it("leaves name=\"value\" as written, and still makes quotations « »", () => {
+    expect(typeset('xml-stylesheet avec type="text/css" n’est pas retiré, dit "Chrome"')).toBe(s('xml-stylesheet avec type="text/css" n’est pas retiré, dit «_Chrome_»'));
+  });
+
   it("leaves HTML entities, and times in tables", () => {
     expect(typeset("A &amp; B&nbsp;!")).toBe("A &amp; B&nbsp;!");
     expect(typeset("12:30")).toBe("12:30");

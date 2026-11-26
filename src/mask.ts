@@ -107,6 +107,8 @@ export function mask(input: string, format: Format, keep: readonly string[]): Ma
   add(DOMAIN, WORD, true);
   add(ENTITY, WORD);
   add(HEADER, WORD);
+  // An attribute written in prose (type="text/css") is code: its quotes are not a quotation.
+  add(/(?<=[\p{L}\p{N}_-])="[^"\n]*"/gu, WORD);
 
   ranges.sort((a, b) => a[0] - b[0]);
   let text = "";
