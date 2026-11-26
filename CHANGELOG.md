@@ -6,6 +6,12 @@ Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Cha
 
 ## [Non publié]
 
+## [1.0.4] - 2026-11-26
+
+### Ajouté
+
+- Les formats de traduction mobiles et les autres, fichiers français seulement : `Localizable.strings` d’iOS et de macOS et `.xcstrings` de Xcode (les localisations françaises seulement, pluriels compris), `strings.xml` d’Android (`<string>`, `<plurals>`, `<string-array>`), `.po` de gettext (les `msgstr` seulement), XLIFF (les `<target>` seulement), YAML (Rails, i18next), `.properties` de Java et `.arb` de Flutter. Un fichier est français par son chemin (`fr.lproj/`, `values-fr/`, `fr/LC_MESSAGES/`, `_fr`, `fr.yml`) ou par ce qu’il déclare. Les clés, les commentaires, les métadonnées et les échappements de chaque format restent tels quels.
+
 ## [1.0.3] - 2026-11-26
 
 ### Corrigé

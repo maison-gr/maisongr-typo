@@ -65,6 +65,32 @@ describe("JSON files", async () => {
   }
 });
 
+// The translation readers (formats.ts): unclosed tags and quotes, long lines, many entries.
+describe("translation files", async () => {
+  const { kindOf, processText } = await import("../src/files.js");
+  const files: [string, string][] = [
+    ["res/values-fr/strings.xml", "<string>a ".repeat(N / 10)],
+    ["res/values-fr/strings.xml", `<resources>${"<item>Lundi : fermé</item>".repeat(N / 25)}</resources>`],
+    ["fr.lproj/Localizable.strings", '"a" = "'.repeat(N / 7)],
+    ["fr.lproj/Localizable.strings", '"k" = "Prêt : oui";\n'.repeat(N / 20)],
+    ["fr.po", 'msgstr "'.repeat(N / 8)],
+    ["fr.po", 'msgid "a"\nmsgstr "Prêt : oui"\n'.repeat(N / 30)],
+    ["fr.xlf", `target-language="fr" ${"<target>a ".repeat(N / 10)}`],
+    ["config/locales/fr.yml", `fr:\n${"  k: Prêt : oui\n".repeat(N / 16)}`],
+    ["config/locales/fr.yml", `fr:\n  k: ${" ".repeat(N)}x`],
+    ["config/locales/fr.yml", `fr:\n  - ${"- ".repeat(N / 2)}`],
+    ["messages_fr.properties", `k=${"\\".repeat(N)}`],
+    ["messages_fr.properties", "k=Prêt : oui\n".repeat(N / 12)],
+  ];
+  for (const [path, source] of files) {
+    it(`${path}: ${source.slice(0, 24).replace(/\n/g, "\\n")}…`, () => {
+      const started = performance.now();
+      processText(source, kindOf(path), {}, undefined, path);
+      expect(performance.now() - started).toBeLessThan(3000);
+    });
+  }
+});
+
 describe("JavaScript files", async () => {
   const { processText } = await import("../src/files.js");
   const code: Record<string, string> = {

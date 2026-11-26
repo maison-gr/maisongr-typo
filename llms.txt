@@ -1,6 +1,6 @@
 # maisongr-typo
 
-> An open-source npm package (MIT, no runtime dependencies, Node 20.9+) that applies French typography to text, Markdown, HTML, JSON translation files and the French strings of JavaScript/TypeScript code: the Office québécois de la langue française's rules by default (fr-CA), France's with locale fr-FR. It has a CLI with a check command for CI.
+> An open-source npm package (MIT, no runtime dependencies, Node 20.9+) that applies French typography to text, Markdown, HTML, translation files (JSON, iOS .strings/.xcstrings, Android strings.xml, gettext .po, XLIFF, YAML, Java .properties, Flutter .arb) and the French strings of JavaScript/TypeScript code: the Office québécois de la langue française's rules by default (fr-CA), France's with locale fr-FR. It has a CLI with a check command for CI.
 
 fr-CA puts no space before ; ! ? (the OQLF's choice; a narrow no-break space with highPunctuation: "narrow"), a no-break space (U+00A0) before : and inside « », writes hours 8 h 30 and amounts 29 $ and 12 535 $, and ordinals 2e, 1re, 1er. fr-FR puts a narrow no-break space (U+202F) before ; ! ? and between digit groups. Links, emails, domains, entities, code, tags and link targets are never changed.
 
@@ -12,6 +12,7 @@ fr-CA puts no space before ; ! ? (the OQLF's choice; a narrow no-break space wit
 - Files: `npx maisongr-typo check <files or folders>` (exit 1 when something needs fixing), `npx maisongr-typo fix <files or folders>`.
 - JSON: name the file; `--only-key fr` limits it to strings under a key named fr.
 - JavaScript/TypeScript (.js .jsx .ts .tsx .mjs .cjs .mts .cts): only French strings, never code (keys, imports, ${…} expressions, regexes kept byte for byte). French = a French file (fr.ts, fr-CA.js, *.fr.ts, fr/ folder), a string under an fr key, or a string that reads as French. HTML inside a string is typeset as HTML. Folders: French files only, or all code with --code; test files are skipped.
+- Translation formats, French files only (by path: fr.lproj/, values-fr/, fr/LC_MESSAGES/, _fr, fr.yml; or declared: .po Language: fr, XLIFF target-language, .arb @@locale, YAML root fr:): iOS .strings and .xcstrings (French localizations only), Android strings.xml (string, plurals, string-array; translatable="false" and CDATA skipped), gettext .po (msgstr only), XLIFF (target only), YAML (values), Java .properties (\u escapes kept in ASCII files), Flutter .arb (never @ metadata). Each format's escapes are kept; only text changes.
 - Standard input: `npx maisongr-typo < in.txt > out.txt`.
 - `--json` prints a machine-readable report.
 

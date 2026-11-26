@@ -1,6 +1,6 @@
 ---
 name: maisongr-typo
-description: Apply or check French typography (Québec's OQLF rules by default, France's on request) in text, Markdown, HTML, JSON translation files and the French strings of JavaScript/TypeScript code with the maisongr-typo package. Use when writing or reviewing French copy, French UI strings or a fr.json file, when the user mentions espaces insécables, guillemets « », French spacing before : ; ! ?, Québec French typography or OQLF, or when French text shows a line starting with « : », « ? » or « $ ».
+description: Apply or check French typography (Québec's OQLF rules by default, France's on request) in text, Markdown, HTML, translation files (JSON, iOS, Android, gettext, XLIFF, YAML, Java, Flutter) and the French strings of JavaScript/TypeScript code with the maisongr-typo package. Use when writing or reviewing French copy, French UI strings or a fr.json file, when the user mentions espaces insécables, guillemets « », French spacing before : ; ! ?, Québec French typography or OQLF, or when French text shows a line starting with « : », « ? » or « $ ».
 license: MIT
 ---
 
@@ -19,6 +19,7 @@ It prints `{ ok, files, issues, report: [{ file, issues: [{ rule, message, line,
 - Markdown, HTML and `.txt` files are found in folders; JSON files are read only when named.
 - JavaScript/TypeScript: French files (fr.ts, locales/fr/…) are found in folders; `--code` reads all code in a folder, its French strings only. Keys, imports and `${…}` are never touched.
 - For a translation file holding several languages: `--only-key fr`.
+- Mobile and other translation formats are read when French: `fr.lproj/*.strings`, `.xcstrings` (French localizations only), `res/values-fr/strings.xml`, `fr.po`, XLIFF with a French `target-language`, `config/locales/fr.yml`, `messages_fr.properties`, `app_fr.arb`. Only the text changes; keys, comments, metadata and escapes stay as written.
 - For France: `--locale fr-FR`. For a narrow no-break space before ; ! ? in Québec: `--narrow`.
 - A brand written with a mark French would space (`Toqué!`, `Yahoo!`): `--keep "Toqué!,Yahoo!"`.
 
