@@ -14,6 +14,8 @@ const hostile: Record<string, string> = {
   "unclosed quotes": '"a '.repeat(N / 3),
   "unclosed guillemets": "« a ".repeat(N / 4),
   "colons": "a :".repeat(N / 3),
+  "header names, no colon": `Sec${"-Fetch".repeat(N / 6)}`,
+  "header names": "X-A".repeat(N / 3),
   "hours": "8h".repeat(N / 2),
   "unclosed backticks": "`a ".repeat(N / 3),
   "unclosed tags": "<a ".repeat(N / 3),

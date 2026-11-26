@@ -6,6 +6,13 @@ All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](ht
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-11-26
+
+### Fixed
+
+- "on" and "son" no longer count as French words: they are English words too, and "50% on signing, 50% on delivery" was read as French.
+- An HTTP header named in prose (`Sec-Fetch-Dest: document`, `Content-Type: text/html`) is left as written; a place name ("Saint-Jean-Baptiste: fête") is still typeset.
+
 ## [1.0.1] - 2026-11-25
 
 ### Added

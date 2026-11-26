@@ -128,7 +128,8 @@ describe("helpers", () => {
 
   it("tells French strings from English ones and from code", () => {
     for (const t of ["Politique de confidentialité", "Gérer les cookies", "Nous utilisons des cookies d'analyse", "« Bonjour »", "C'est l'été"]) expect(looksFrench(t), t).toBe(true);
-    for (const t of ["Bilingual by design", "Montréal", "flex gap-2 md:items-center", "Accepter", "The café is open for you", "", "/api/v1/users"]) expect(looksFrench(t), t).toBe(false);
+    // "on" and "son" are English words too (found in maisonGR: "50% on signing, 50% on delivery.").
+    for (const t of ["50% on signing, 50% on delivery.", "Your son is on the list", "Bilingual by design", "Montréal", "flex gap-2 md:items-center", "Accepter", "The café is open for you", "", "/api/v1/users"]) expect(looksFrench(t), t).toBe(false);
   });
 
   it("decodes and encodes JavaScript strings both ways", () => {

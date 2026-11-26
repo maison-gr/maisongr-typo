@@ -22,6 +22,9 @@ const URL = /\b(?:https?|ftp):\/\/[^\s<>"«»]+|\bwww\.[^\s<>"«»]+/giu;
 const EMAIL = /(?<![\p{L}\p{N}._%+-])[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)+/gu;
 // A bare domain, with its path: lowercase top-level domain, so "M.Tremblay" or "fin.Voici" are not domains.
 const DOMAIN = /(?<![\p{L}\p{N}@/.\-])(?:[\p{L}\p{N}-]+\.)+[a-z]{2,24}(?:\/[^\s<>"«»]*)?(?![\p{L}\p{N}])/gu;
+// An HTTP header named in prose ("envoie Sec-Fetch-Dest: document"), its colon included: only the usual header
+// families, so a place name ("Saint-Jean-Baptiste: fête") is still typeset.
+const HEADER = /(?<![\p{L}\p{N}-])(?:X|Sec|Content|Accept|Access|Cache|If|Last|Set|Strict|Cross|Referrer|Permissions|Proxy|Retry|Transfer|User|WWW)(?:-[A-Z][A-Za-z0-9]*)+:/gu;
 const ENTITY = /&(?:[a-z][a-z0-9]*|#\d+|#x[\da-f]+);/giu;
 // Sentence punctuation right after a link belongs to the sentence, not the link. Counted from the end without a
 // regex: an unanchored /[…]+$/ rescans a long run of marks from each of its characters (CodeQL js/polynomial-redos).
@@ -103,6 +106,7 @@ export function mask(input: string, format: Format, keep: readonly string[]): Ma
   add(EMAIL, WORD);
   add(DOMAIN, WORD, true);
   add(ENTITY, WORD);
+  add(HEADER, WORD);
 
   ranges.sort((a, b) => a[0] - b[0]);
   let text = "";
