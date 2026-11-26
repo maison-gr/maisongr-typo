@@ -61,5 +61,83 @@ jobs:
       - run: npm ci
       # npm quietly rewrites a package.json it finds invalid when publishing (it once dropped the CLI's bin). Fail instead.
       - run: npm pkg fix && git diff --exit-code package.json
-      # prepack builds dist; the listing shows exactly what npm would publish.
+      # prepare builds dist; the listing shows exactly what npm would publish.
       - run: npm pack --dry-run
+
+  # The three ways to run it without writing code, each on a small French site: the GitHub Action (action.yml),
+  # the pre-commit hooks (.pre-commit-hooks.yaml) and the container image (Dockerfile).
+  action:
+    name: GitHub Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # The package as npm would serve it, since this commit's version isn't on npm yet.
+      - id: pack
+        run: echo "tgz=$GITHUB_WORKSPACE/$(npm pack --silent | tail -n 1)" >> "$GITHUB_OUTPUT"
+      - run: |
+          mkdir -p "$RUNNER_TEMP/site/fr"
+          printf 'Prêt ? Oui\n' > "$RUNNER_TEMP/site/fr/a.md"
+      - id: check
+        uses: ./
+        continue-on-error: true
+        with:
+          paths: ${{ runner.temp }}/site
+          version: ${{ steps.pack.outputs.tgz }}
+      - run: test "${{ steps.check.outcome }}" = failure
+      - uses: ./
+        with:
+          command: fix
+          paths: ${{ runner.temp }}/site
+          version: ${{ steps.pack.outputs.tgz }}
+      - run: test "$(cat "$RUNNER_TEMP/site/fr/a.md")" = 'Prêt? Oui'
+      - uses: ./
+        with:
+          paths: ${{ runner.temp }}/site
+          version: ${{ steps.pack.outputs.tgz }}
+
+  pre-commit:
+    name: pre-commit hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/site"
+          mkdir -p "$site/fr" && cd "$site" && git init -q
+          printf 'Prêt ? Oui\n' > fr/a.md
+          printf 'Ready ? Yes\n' > README.md
+          git add .
+          if pipx run pre-commit==4.7.0 try-repo "$GITHUB_WORKSPACE" maisongr-typo --all-files; then
+            echo "::error::the check hook passed on a file to fix"; exit 1
+          fi
+          pipx run pre-commit==4.7.0 try-repo "$GITHUB_WORKSPACE" maisongr-typo-fix --all-files || true
+          test "$(cat fr/a.md)" = 'Prêt? Oui'
+          # Not a French path: never passed to the hook.
+          test "$(cat README.md)" = 'Ready ? Yes'
+
+  docker:
+    name: Container image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: docker build -t maisongr-typo .
+      - run: |
+          set -euo pipefail
+          mkdir -p site/fr
+          printf 'Prêt ? Oui\n' > site/fr/a.md
+          docker run --rm maisongr-typo --version
+          set +e; docker run --rm -v "$PWD/site:/work" maisongr-typo check .; status=$?; set -e
+          test "$status" = 1
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/site:/work" maisongr-typo fix .
+          test "$(cat site/fr/a.md)" = 'Prêt? Oui'
+          echo 'Prêt ? Oui' | docker run --rm -i maisongr-typo | grep -qx 'Prêt? Oui'

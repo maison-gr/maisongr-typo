@@ -6,6 +6,15 @@ Toutes les modifications notables de `maisongr-typo`. Le format suit [Keep a Cha
 
 ## [Non publié]
 
+## [1.0.5] - 2026-11-26
+
+### Ajouté
+
+- Une action GitHub (`uses: maison-gr/maisongr-typo@v1.0.5`) : chaque problème s’affiche sur sa ligne dans la demande de tirage.
+- Des crochets pre-commit, `maisongr-typo` (vérification) et `maisongr-typo-fix`, pour les fichiers dont le chemin dit français par défaut.
+- Une image de conteneur, `ghcr.io/maison-gr/maisongr-typo`, pour linux/amd64 et linux/arm64.
+- `--github` : le rapport en annotations GitHub Actions.
+
 ## [1.0.4] - 2026-11-26
 
 ### Ajouté

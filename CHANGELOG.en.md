@@ -6,6 +6,15 @@ All notable changes to `maisongr-typo`. The format follows [Keep a Changelog](ht
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-11-26
+
+### Added
+
+- A GitHub Action (`uses: maison-gr/maisongr-typo@v1.0.5`): each problem shows up on its line in the pull request.
+- pre-commit hooks, `maisongr-typo` (check) and `maisongr-typo-fix`, for files whose path says French by default.
+- A container image, `ghcr.io/maison-gr/maisongr-typo`, for linux/amd64 and linux/arm64.
+- `--github`: the report as GitHub Actions annotations.
+
 ## [1.0.4] - 2026-11-26
 
 ### Added

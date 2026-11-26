@@ -124,7 +124,7 @@ content/accueil.md:3:19  colon  " :" → "⍽:"  Put a no-break space before the
 2 problems in 1 file. Run "maisongr-typo fix" to fix them.
 ```
 
-Les messages de l’outil sont en anglais, comme la plupart des outils de développement. Dans les rapports, `⍽` marque une espace insécable et `⸱` une espace fine. L’outil lit les fichiers `.md`, `.mdx`, `.markdown`, `.html`, `.htm` et `.txt`, et les cherche dans les dossiers en sautant `node_modules`, `.git` et les dossiers de compilation. Options : celles ci-dessus en drapeaux (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` pour un rapport lisible par une machine, et `--help`.
+Les messages de l’outil sont en anglais, comme la plupart des outils de développement. Dans les rapports, `⍽` marque une espace insécable et `⸱` une espace fine. L’outil lit les fichiers `.md`, `.mdx`, `.markdown`, `.html`, `.htm` et `.txt`, et les cherche dans les dossiers en sautant `node_modules`, `.git` et les dossiers de compilation. Options : celles ci-dessus en drapeaux (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` pour un rapport lisible par une machine, `--github` pour des annotations GitHub Actions, et `--help`.
 
 ### Fichiers de traduction
 
@@ -179,7 +179,39 @@ npx maisongr-typo check ios/ android/app/src/main/res config/locales
 - run: npx maisongr-typo check content/ locales/fr.json src/lib/translations
 ```
 
-La compilation échoue sur un nouveau texte qui enfreint les règles, et le rapport dit où, et quoi écrire à la place.
+La compilation échoue sur un nouveau texte qui enfreint les règles, et le rapport dit où, et quoi écrire à la place. Ou, sans script à écrire :
+
+**Action GitHub.** Chaque problème s’affiche sur sa ligne dans la demande de tirage (pull request).
+
+```yaml
+- uses: actions/checkout@v5
+- uses: maison-gr/maisongr-typo@v1.0.5
+  with:
+    paths: content/ locales/fr.json src/lib/translations
+    # locale: fr-FR · narrow: true · code: true · keep: "Toqué!" · only-key: fr · command: fix
+```
+
+L’action lance la version npm de son étiquette (`version` pour en choisir une autre) et demande Node.js 20.9 ou plus sur l’exécuteur, ce qu’ont ceux de GitHub. Ailleurs, `npx maisongr-typo check … --github` affiche les mêmes annotations.
+
+**pre-commit.** Dans `.pre-commit-config.yaml` :
+
+```yaml
+repos:
+  - repo: https://github.com/maison-gr/maisongr-typo
+    rev: v1.0.5
+    hooks:
+      - id: maisongr-typo        # ou maisongr-typo-fix, qui corrige les fichiers
+        # files: ^contenu/      # vos textes français, si leurs chemins ne disent pas fr
+```
+
+Un fichier nommé sur la ligne de commande est lu comme du français; par défaut, le crochet ne reçoit donc que les fichiers dont le chemin dit français : `fr/…`, `fr.json`, `*.fr.md`, `fr.lproj/`, `values-fr/`, `fr.po`, `fr.yml`, `*_fr.properties`, `app_fr.arb`, et les `.xcstrings`. Les fichiers JavaScript, TypeScript et de traduction peuvent s’y ajouter, quelle que soit leur langue : seul leur texte français est lu.
+
+**Docker,** pour toute CI ou une machine sans Node.js (linux/amd64 et linux/arm64) :
+
+```sh
+docker run --rm -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo check contenu/
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo fix contenu/
+```
 
 ## Ce qu’il ne touche jamais
 

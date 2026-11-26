@@ -14,7 +14,8 @@ fr-CA puts no space before ; ! ? (the OQLF's choice; a narrow no-break space wit
 - JavaScript/TypeScript (.js .jsx .ts .tsx .mjs .cjs .mts .cts): only French strings, never code (keys, imports, ${…} expressions, regexes kept byte for byte). French = a French file (fr.ts, fr-CA.js, *.fr.ts, fr/ folder), a string under an fr key, or a string that reads as French. HTML inside a string is typeset as HTML. Folders: French files only, or all code with --code; test files are skipped.
 - Translation formats, French files only (by path: fr.lproj/, values-fr/, fr/LC_MESSAGES/, _fr, fr.yml; or declared: .po Language: fr, XLIFF target-language, .arb @@locale, YAML root fr:): iOS .strings and .xcstrings (French localizations only), Android strings.xml (string, plurals, string-array; translatable="false" and CDATA skipped), gettext .po (msgstr only), XLIFF (target only), YAML (values), Java .properties (\u escapes kept in ASCII files), Flutter .arb (never @ metadata). Each format's escapes are kept; only text changes.
 - Standard input: `npx maisongr-typo < in.txt > out.txt`.
-- `--json` prints a machine-readable report.
+- `--json` prints a machine-readable report; `--github` prints GitHub Actions annotations.
+- Without code: GitHub Action `uses: maison-gr/maisongr-typo@v1.0.5` (inputs paths, command check|fix, locale, narrow, code, keep, only-key, args, version); pre-commit hooks `maisongr-typo` and `maisongr-typo-fix` (French paths only by default; set files:); Docker `docker run --rm -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo check .`.
 
 ## Links
 

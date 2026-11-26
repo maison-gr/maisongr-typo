@@ -8,6 +8,11 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+  # The Node.js base image of the container (pinned by digest).
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
   # Development tools only: the package has no runtime dependencies.
   - package-ecosystem: npm
     directory: /

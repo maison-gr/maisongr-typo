@@ -124,7 +124,7 @@ content/accueil.md:3:19  colon  " :" → "⍽:"  Put a no-break space before the
 2 problems in 1 file. Run "maisongr-typo fix" to fix them.
 ```
 
-`⍽` marks a no-break space and `⸱` a narrow one in reports. The CLI reads `.md`, `.mdx`, `.markdown`, `.html`, `.htm` and `.txt` files, and searches folders for them, skipping `node_modules`, `.git` and build output. Options: the ones above as flags (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` for a machine-readable report, and `--help`.
+`⍽` marks a no-break space and `⸱` a narrow one in reports. The CLI reads `.md`, `.mdx`, `.markdown`, `.html`, `.htm` and `.txt` files, and searches folders for them, skipping `node_modules`, `.git` and build output. Options: the ones above as flags (`--locale fr-FR`, `--narrow`, `--keep "Toqué!,Yahoo!"`, `--colon-hours`, `--group-four-digits`, `--no-quotes`…), `--json` for a machine-readable report, `--github` for GitHub Actions annotations, and `--help`.
 
 ### Translation files
 
@@ -179,7 +179,39 @@ npx maisongr-typo check ios/ android/app/src/main/res config/locales
 - run: npx maisongr-typo check content/ locales/fr.json src/lib/translations
 ```
 
-It fails the build on new copy that breaks the rules, and the report says where and what to write instead.
+It fails the build on new copy that breaks the rules, and the report says where and what to write instead. Or, with no script to write:
+
+**GitHub Action.** Each problem shows up on its line in the pull request.
+
+```yaml
+- uses: actions/checkout@v5
+- uses: maison-gr/maisongr-typo@v1.0.5
+  with:
+    paths: content/ locales/fr.json src/lib/translations
+    # locale: fr-FR · narrow: true · code: true · keep: "Toqué!" · only-key: fr · command: fix
+```
+
+The action runs the npm version it was tagged with (`version` to choose another) and needs Node.js 20.9+ on the runner, which GitHub's runners have. Elsewhere, `npx maisongr-typo check … --github` prints the same annotations.
+
+**pre-commit.** In `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/maison-gr/maisongr-typo
+    rev: v1.0.5
+    hooks:
+      - id: maisongr-typo        # or maisongr-typo-fix, which fixes the files
+        # files: ^content/      # your French content, if its paths don't say fr
+```
+
+A file named on the command line is read as French, so by default the hook only gets files whose path says French: `fr/…`, `fr.json`, `*.fr.md`, `fr.lproj/`, `values-fr/`, `fr.po`, `fr.yml`, `*_fr.properties`, `app_fr.arb`, and `.xcstrings`. JavaScript, TypeScript and translation files can be added whatever their language: only their French text is read.
+
+**Docker,** for any CI or a machine without Node.js (linux/amd64 and linux/arm64):
+
+```sh
+docker run --rm -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo check content/
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo fix content/
+```
 
 ## What it never touches
 
