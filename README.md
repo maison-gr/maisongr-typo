@@ -10,7 +10,7 @@
 ![Dépendances à l’exécution : 0](https://img.shields.io/badge/d%C3%A9pendances-0-3a0f14)
 ![Node 20.9+](https://img.shields.io/badge/node-%E2%89%A520.9-3a0f14)
 
-![Une épreuve d’imprimerie de accueil.md : à gauche, le texte tel que rédigé, avec des marques de correction sur les heures, les guillemets droits, l’ordinal et la somme; à droite, le même texte après maisongr-typo, chaque espace insécable marquée en rouge; en marge, la règle derrière chaque correction. En bas : npx maisongr-typo check accueil.md, 11 corrections.](.github/assets/hero.png)
+![Logiciels libres Maison GR, 03 : maisongr-typo. La typographie française, à la québécoise. À côté, la commande à l’œuvre : l’espace avant le deux-points, l’apostrophe et l’heure corrigées dans deux fichiers, puis check sans aucun problème.](.github/assets/hero.jpg)
 
 ```js
 import { typeset } from "maisongr-typo";
