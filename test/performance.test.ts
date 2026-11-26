@@ -46,6 +46,25 @@ describe("performance", () => {
 
 // The JavaScript reader (src/javascript.ts) on the inputs that slow a scanner: unclosed strings, templates, comments and
 // regular expressions, deep ${…} nesting, and keys without values.
+// The JSON editor (files.ts) on deep nesting, long strings, many keys and long runs of escapes.
+describe("JSON files", async () => {
+  const { processText } = await import("../src/files.js");
+  const json: Record<string, string> = {
+    "deep nesting": `${"[".repeat(N / 4)}${"]".repeat(N / 4)}`,
+    "deep objects": `${'{"a":'.repeat(N / 10)}1${"}".repeat(N / 10)}`,
+    "one long string": JSON.stringify({ a: `Prêt ? ${"a ".repeat(N / 2)}` }),
+    "many keys": JSON.stringify(Object.fromEntries(Array.from({ length: N / 20 }, (_, i) => [`k${i}`, "C'est l'été : oui"]))),
+    "escapes": JSON.stringify({ a: '\\"'.repeat(N / 4) }),
+  };
+  for (const [name, source] of Object.entries(json)) {
+    it(name, () => {
+      const started = performance.now();
+      processText(source, "json", {});
+      expect(performance.now() - started).toBeLessThan(3000);
+    });
+  }
+});
+
 describe("JavaScript files", async () => {
   const { processText } = await import("../src/files.js");
   const code: Record<string, string> = {
@@ -58,6 +77,10 @@ describe("JavaScript files", async () => {
     "spaces before a colon": `{ "fr"${" ".repeat(N)}`,
     "French strings": `x = "C'est l'été : oui !"; `.repeat(N / 25),
     "JSX apostrophes": "<p>l'été d'abord</p>".repeat(N / 20),
+    "braces, one far close": `x = "${"{a ".repeat(N / 3)}}";`,
+    "semicolons, no brace": `x = "${"a; ".repeat(N / 3)}";`,
+    "custom properties": `x = "${"--a: 1; ".repeat(N / 8)}";`,
+    "words of every language": `x = "${"de la que il en the der het ".repeat(N / 30)}";`,
   };
   for (const [name, source] of Object.entries(code)) {
     it(name, () => {

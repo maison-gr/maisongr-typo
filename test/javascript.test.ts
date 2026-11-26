@@ -87,7 +87,8 @@ const c = "Déjà vu? Non";`));
 
   it("keeps a file with nothing to fix byte for byte, line endings included", () => {
     const source = "export default {\r\n  title: \"Bonjour\",\r\n  en: \"Hello : there\",\r\n};\r\n";
-    expect(fix(source, "fr.ts")).toBe(source.replace("Hello : there", s("Hello_: there")));
+    // In a French file too, a value under an en key is English: left as written.
+    expect(fix(source, "fr.ts")).toBe(source);
     const english = "const x = 'Hello : world';\r\n";
     expect(fix(english)).toBe(english);
   });
@@ -95,6 +96,51 @@ const c = "Déjà vu? Non";`));
   it("reports each problem at its line and column in the file", () => {
     const { issues } = processText(`const x = 1;\nconst y = "Prix : l'été";\n`, "javascript", {}, undefined, "fr.ts");
     expect(issues.map((i) => [i.rule, i.line, i.column]).sort((a, b) => (a[2] as number) - (b[2] as number))).toEqual([["colon", 2, 16], ["apostrophe", 2, 20]]);
+  });
+});
+
+// Found in Resistaa (26 Nov 2026), ten languages: Spanish, Italian, Portuguese, German, Dutch and Arabic strings were
+// typeset as French with --code.
+describe("other languages", () => {
+  it("never reads a file named for another language as French", () => {
+    const source = `export const common = { tagline: "Para el cerebro que sabe : pero no puede empezar", hint: "C'est l'été : oui" };`;
+    for (const path of ["src/lib/translations/namespaces/common/es.ts", "content/seoGuides/it.ts", "locales/pt-BR/common.ts", "i18n/de/index.js", "messages.nl.ts", "ar.ts"]) {
+      expect(fix(source, path), path).toBe(source);
+    }
+  });
+
+  it("never reads strings under another language's key as French", () => {
+    const source = `const copy = { fr: { a: "Prix : 5 $" }, es: { a: "Precio : de la tienda que" }, it: { a: "Il prezzo : della casa" }, "pt-BR": "Preço : de la" };`;
+    // Keys that only start like a language code are ordinary keys.
+    expect(fix(`const c = { hint: "C'est l'été : oui", item: "Prix : 5 $" };`, "fr.ts")).toBe(s(`const c = { hint: "C’est l’été_: oui", item: "Prix_: 5_$" };`));
+    expect(fix(source)).toBe(s(`const copy = { fr: { a: "Prix_: 5_$" }, es: { a: "Precio : de la tienda que" }, it: { a: "Il prezzo : della casa" }, "pt-BR": "Preço : de la" };`));
+  });
+
+  it("tells French from Spanish, Italian, Portuguese, German and Dutch", () => {
+    for (const t of [
+      "Para el cerebro que sabe, pero no puede empezar con la tarea",
+      "Usamos cookies de análisis para entender el uso de la app",
+      "Per il cervello che sa, ma non riesce a iniziare l'attività",
+      "Usiamo i cookie di analisi per capire l'uso della app",
+      "Para o cérebro que sabe, mas não consegue começar a tarefa",
+      "Usamos cookies de análise para entender o uso do app",
+      "Für das Gehirn, das es weiß, aber nicht anfangen kann",
+      "Voor het brein dat het weet, maar niet kan beginnen met de taak",
+    ]) expect(looksFrench(t), t).toBe(false);
+    for (const t of ["Pour le cerveau qui sait, mais ne peut pas commencer", "Nous utilisons des cookies d'analyse pour comprendre l'utilisation", "Gérer les cookies"]) expect(looksFrench(t), t).toBe(true);
+  });
+});
+
+// Also found in Resistaa: CSS in a template (with quotes: "«" "»"), and an English AI prompt under an fr key.
+describe("code and other languages inside French", () => {
+  it("never typesets CSS or other code held in a string", () => {
+    const source = "const STYLES = `\n.ge {\n  --background: 220 20% 97%;\n  --foreground: 225 17% 9%;\n  quotes: \"«\" \"»\";\n}\n`;\nconst x = { fr: \"a { color: red; } b { margin: 0; }\" };";
+    expect(fix(source, "fr.ts")).toBe(source);
+  });
+
+  it("leaves a string that clearly reads as another language, even under an fr key, and keeps \\n escapes", () => {
+    const source = "const p = { fr: `\\nLANGUAGE RULE: Respond entirely in French. Every step in the JSON array must be in French.`, hint: `Ligne : un\\nligne deux` };";
+    expect(fix(source, "fr.ts")).toBe(s("const p = { fr: `\\nLANGUAGE RULE: Respond entirely in French. Every step in the JSON array must be in French.`, hint: `Ligne_: un\\nligne deux` };"));
   });
 });
 
