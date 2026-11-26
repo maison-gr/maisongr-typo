@@ -2,7 +2,7 @@
 
 **Français** · [English](README.en.md)
 
-**La typographie française, à la québécoise.** Les espaces insécables, les « guillemets », les heures, les sommes et les ordinaux que prescrit l’Office québécois de la langue française (OQLF), appliqués au texte, au Markdown, au HTML et aux fichiers de traduction JSON. Les règles de la France sur demande. Une commande `check` garde les nouveaux textes conformes dans la CI.
+**La typographie française, à la québécoise.** Les espaces insécables, les « guillemets », les heures, les sommes et les ordinaux que prescrit l’Office québécois de la langue française (OQLF), appliqués au texte, au Markdown, au HTML, aux fichiers de traduction JSON et aux chaînes françaises du code JavaScript et TypeScript. Les règles de la France sur demande. Une commande `check` garde les nouveaux textes conformes dans la CI.
 
 [![npm version](https://img.shields.io/npm/v/maisongr-typo?color=3a0f14)](https://www.npmjs.com/package/maisongr-typo)
 [![CI](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml/badge.svg)](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml)
@@ -137,10 +137,27 @@ npx maisongr-typo fix messages.json --only-key fr
 
 Un fichier sans rien à corriger reste identique octet pour octet; un fichier corrigé garde son indentation et ses fins de ligne.
 
+### JavaScript et TypeScript
+
+Le texte français d’une application vit souvent dans son code. Dans un fichier `.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts` ou `.cts`, seules les chaînes de caractères françaises sont corrigées; le code reste identique octet pour octet. Une chaîne est française quand elle est :
+
+- dans un fichier français : `fr.ts`, `fr-CA.js`, `messages.fr.ts`, ou un dossier `fr/`;
+- sous une clé `fr` (`{ fr: { … }, en: { … } }`), à n’importe quelle profondeur;
+- ailleurs, quand elle se lit en français : `isFr ? 'Gérer les cookies' : 'Manage cookies'`.
+
+Les clés, les chemins d’import, les expressions `${…}` et les expressions régulières ne sont jamais touchés. Le HTML d’une chaîne (un gabarit de courriel) est corrigé comme du HTML : ses balises et ses attributs restent tels quels, même quand un `${…}` les coupe.
+
+```sh
+npx maisongr-typo check src/lib/translations      # les fichiers français d’un dossier
+npx maisongr-typo check src --code                # tout le code d’un dossier, ses chaînes françaises seulement
+```
+
+Dans un dossier, les fichiers de test (`*.test.ts`, `__tests__/`…) ne sont jamais lus comme du code : leurs chaînes sont ce qu’ils comparent.
+
 ## Dans la CI
 
 ```yaml
-- run: npx maisongr-typo check content/ locales/fr.json
+- run: npx maisongr-typo check content/ locales/fr.json src/lib/translations
 ```
 
 La compilation échoue sur un nouveau texte qui enfreint les règles, et le rapport dit où, et quoi écrire à la place.
@@ -159,7 +176,7 @@ Le paquet fournit une [Agent Skill](skills/maisongr-typo/SKILL.md) qui dit à un
 
 ## Limites
 
-- Il suppose que le texte est en français. Lancez-le sur du texte français seulement (en JSON, `--only-key fr` aide).
+- Il suppose que le texte est en français. Lancez-le sur du texte français seulement (en JSON, `--only-key fr` aide; dans le code, seules les chaînes françaises sont lues).
 - Il ne corrige ni l’orthographe, ni les accents, ni les majuscules, ni la grammaire, et ne choisit pas entre `8 h 05` et `8 h 5` : il garde ce que vous avez écrit.
 - Les ordinaux sont corrigés pour les nombres écrits en chiffres; `1ème` est laissé tel quel, puisque `1er` ou `1re` dépend du genre.
 - En HTML, les espaces insécables qu’il ajoute sont des caractères (U+00A0, U+202F), pas des `&nbsp;`. Servez la page en UTF-8.

@@ -15,7 +15,9 @@ Usage
   maisongr-typo fix <files or folders…>     fix the files in place
   maisongr-typo [--format markdown] < in.txt > out.txt
 
-Files: .md .mdx .markdown .html .htm .txt, and .json named on the command line (its string values; never its keys).
+Files: .md .mdx .markdown .html .htm .txt; .json named on the command line (its string values; never its keys);
+JavaScript and TypeScript (.js .jsx .ts .tsx .mjs .cjs .mts .cts): their French strings, never the code. A French file
+(fr.ts, fr-CA.js, locales/fr/…) whole; elsewhere strings under an fr key, or that read as French.
 Folders are searched for the first ones, skipping node_modules, .git and build output.
 
 Options
@@ -23,6 +25,7 @@ Options
   --narrow                  fr-CA: a narrow no-break space before ; ! ? (the OQLF accepts it; default: none)
   --keep "Toqué!,Yahoo!"    spellings to leave exactly as written
   --only-key fr             JSON: only strings under a key named fr
+  --code                    in folders, read every JavaScript and TypeScript file, not only French ones
   --format text|markdown|html   for standard input (default text)
   --colon-hours             8:30 → 8 h 30 too
   --group-four-digits       1490 $ → 1 490 $ too
@@ -31,11 +34,11 @@ Options
   --version, --help
 `;
 
-interface Args { command: "check" | "fix" | "stdin"; paths: string[]; options: Options; onlyKey?: string; json: boolean; format?: Kind }
+interface Args { command: "check" | "fix" | "stdin"; paths: string[]; options: Options; onlyKey?: string; json: boolean; format?: Kind; code: boolean }
 
 function parse(argv: string[]): Args {
   const options: Options = {};
-  const args: Args = { command: "stdin", paths: [], options, json: false };
+  const args: Args = { command: "stdin", paths: [], options, json: false, code: false };
   const value = (i: number, flag: string) => {
     const v = argv[i + 1];
     if (v === undefined || v.startsWith("--")) throw new Usage(`${flag} needs a value`);
@@ -55,6 +58,7 @@ function parse(argv: string[]): Args {
       case "--narrow": options.highPunctuation = "narrow"; break;
       case "--keep": options.keep = value(i++, a).split(",").map((s) => s.trim()).filter(Boolean); break;
       case "--only-key": args.onlyKey = value(i++, a); break;
+      case "--code": args.code = true; break;
       case "--format": {
         const v = value(i++, a);
         if (v !== "text" && v !== "markdown" && v !== "html") throw new Usage("--format is text, markdown or html");
@@ -105,9 +109,9 @@ function main(argv: string[]): number {
   }
 
   const report: { file: string; issues: FileIssue[]; fixed: boolean }[] = [];
-  for (const file of expand(args.paths)) {
+  for (const file of expand(args.paths, args.code)) {
     const source = readFileSync(file, "utf8");
-    const { issues, output } = processText(source, kindOf(file), args.options, args.onlyKey);
+    const { issues, output } = processText(source, kindOf(file), args.options, args.onlyKey, file);
     const fixed = args.command === "fix" && output !== source;
     if (fixed) writeFileSync(file, output);
     report.push({ file, issues, fixed });

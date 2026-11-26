@@ -2,7 +2,7 @@
 
 [Français](README.md) · **English**
 
-**French typography, the Québec way.** The no-break spaces, « guillemets », hours, amounts and ordinals the Office québécois de la langue française (OQLF) prescribes, applied to text, Markdown, HTML and JSON translation files. France's rules on request. A `check` command keeps new copy in line in CI.
+**French typography, the Québec way.** The no-break spaces, « guillemets », hours, amounts and ordinals the Office québécois de la langue française (OQLF) prescribes, applied to text, Markdown, HTML, JSON translation files and the French strings of JavaScript and TypeScript code. France's rules on request. A `check` command keeps new copy in line in CI.
 
 [![npm version](https://img.shields.io/npm/v/maisongr-typo?color=3a0f14)](https://www.npmjs.com/package/maisongr-typo)
 [![CI](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml/badge.svg)](https://github.com/maison-gr/maisongr-typo/actions/workflows/ci.yml)
@@ -137,10 +137,27 @@ npx maisongr-typo fix messages.json --only-key fr
 
 A file with nothing to fix is left byte for byte; a fixed one keeps its indentation and line endings.
 
+### JavaScript and TypeScript
+
+An app's French often lives in its code. In a `.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts` or `.cts` file, only French strings are typeset; the code stays byte for byte as it was. A string is French when it is:
+
+- in a French file: `fr.ts`, `fr-CA.js`, `messages.fr.ts`, or an `fr/` folder;
+- under an `fr` key (`{ fr: { … }, en: { … } }`), at any depth;
+- elsewhere, when it reads as French: `isFr ? 'Gérer les cookies' : 'Manage cookies'`.
+
+Keys, import paths, `${…}` expressions and regular expressions are never touched. HTML in a string (an email template) is typeset as HTML: its tags and attributes stay as written, even when a `${…}` splits them.
+
+```sh
+npx maisongr-typo check src/lib/translations      # the French files of a folder
+npx maisongr-typo check src --code                # all the code of a folder, its French strings only
+```
+
+In a folder, test files (`*.test.ts`, `__tests__/`…) are never read as code: their strings are what they compare against.
+
 ## In CI
 
 ```yaml
-- run: npx maisongr-typo check content/ locales/fr.json
+- run: npx maisongr-typo check content/ locales/fr.json src/lib/translations
 ```
 
 It fails the build on new copy that breaks the rules, and the report says where and what to write instead.
@@ -159,7 +176,7 @@ The package ships an [Agent Skill](skills/maisongr-typo/SKILL.md) that tells a c
 
 ## Limits
 
-- It assumes the text is French. Run it on French copy only (in JSON, `--only-key fr` helps).
+- It assumes the text is French. Run it on French copy only (in JSON, `--only-key fr` helps; in code, only French strings are read).
 - It doesn't correct spelling, accents, capitals or grammar, or choose between `8 h 05` and `8 h 5`: it keeps what you wrote.
 - Ordinals are fixed for numbers written in digits; `1ème` is left alone, since `1er` or `1re` depends on the gender.
 - In HTML, the no-break spaces it adds are characters (U+00A0, U+202F), not `&nbsp;`. Serve the page as UTF-8.
