@@ -28,6 +28,13 @@ try {
   assert.equal(json.ok, false);
   assert.equal(json.issues, 4);
 
+  // GitHub Actions annotations: one error per problem, on its line, with workflow-command escaping.
+  const github = run(["check", md, "--github"]);
+  assert.equal(github.status, 1, github.stderr);
+  const annotations = github.stdout.split("\n").filter((l) => l.startsWith("::error "));
+  assert.equal(annotations.length, 4);
+  assert.match(annotations[0], /^::error file=[^,]*page\.md,line=1,col=12,title=maisongr-typo%3A high-punctuation::/);
+
   const fixed = run(["fix", md]);
   assert.equal(fixed.status, 0, fixed.stderr);
   assert.equal(readFileSync(md, "utf8"), "# Bienvenue!\n\nOuvert de 8 h à 17 h : `a ? b`\n");

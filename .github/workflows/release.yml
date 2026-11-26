@@ -51,3 +51,28 @@ jobs:
           fi
       - if: steps.registry.outputs.published != 'true'
         run: npm stage publish --provenance --access public
+
+  # The container image, on GitHub's registry: ghcr.io/maison-gr/maisongr-typo:<version>, :<major> and :latest,
+  # for linux/amd64 and linux/arm64. Built from the release's commit, with the workflow's own token (no secret stored).
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check that the tag matches the package version
+        run: test "v$(node -p 'require("./package.json").version')" = "${{ github.event.release.tag_name }}"
+      - name: Build and push
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          version="$(node -p 'require("./package.json").version')"
+          image="ghcr.io/maison-gr/maisongr-typo"
+          echo "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+          docker buildx create --use
+          docker buildx build --platform linux/amd64,linux/arm64 \
+            -t "$image:$version" -t "$image:${version%%.*}" -t "$image:latest" --push .
+          docker logout ghcr.io

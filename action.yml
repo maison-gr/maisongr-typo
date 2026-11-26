@@ -1,0 +1,73 @@
+name: maisongr-typo
+description: Check French typography (Québec's OQLF rules, or France's) in text, Markdown, HTML, translation files and code.
+author: Maison GR Inc.
+branding:
+  icon: type
+  color: red
+
+# Runs the maisongr-typo CLI from npm, at the version this action was tagged with (or `version`), and reports each
+# problem as an annotation on the pull request's line. Needs Node.js 20.9+ on the runner (GitHub's runners have it).
+
+inputs:
+  paths:
+    description: Files and folders to read, separated by spaces or new lines.
+    default: "."
+  command:
+    description: "`check` (fails on any problem) or `fix` (rewrites the files; commit them in a later step)."
+    default: check
+  locale:
+    description: "`fr-CA` (OQLF, the default) or `fr-FR`."
+    default: fr-CA
+  narrow:
+    description: "`true`: fr-CA with a narrow no-break space before ; ! ?"
+    default: "false"
+  code:
+    description: "`true`: read every JavaScript and TypeScript file in the folders, not only French ones."
+    default: "false"
+  keep:
+    description: Spellings to leave as written, separated by commas (for example `Toqué!,Yahoo!`).
+    default: ""
+  only-key:
+    description: "JSON: only the strings under a key with this name (for example `fr`)."
+    default: ""
+  args:
+    description: Other flags, separated by spaces (for example `--colon-hours --group-four-digits`).
+    default: ""
+  version:
+    description: The npm version to run. Empty: the version this action was tagged with.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        INPUT_PATHS: ${{ inputs.paths }}
+        INPUT_COMMAND: ${{ inputs.command }}
+        INPUT_LOCALE: ${{ inputs.locale }}
+        INPUT_NARROW: ${{ inputs.narrow }}
+        INPUT_CODE: ${{ inputs.code }}
+        INPUT_KEEP: ${{ inputs.keep }}
+        INPUT_ONLY_KEY: ${{ inputs.only-key }}
+        INPUT_ARGS: ${{ inputs.args }}
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        # Inputs arrive as environment variables, never pasted into the script; paths are split on spaces but never
+        # expanded as globs (the CLI searches folders itself).
+        set -f
+        case "$INPUT_COMMAND" in check|fix) ;; *) echo "::error::maisongr-typo: command is check or fix"; exit 2 ;; esac
+        version="${INPUT_VERSION:-$(node -p 'require(process.env.ACTION_PATH + "/package.json").version')}"
+        if [[ "$version" == *.tgz ]]; then spec="$version"
+        elif [[ "$version" =~ ^[0-9A-Za-z.^~*-]+$ ]]; then spec="maisongr-typo@$version"
+        else echo "::error::maisongr-typo: version must be an npm version"; exit 2; fi
+        args=("$INPUT_COMMAND")
+        for p in $INPUT_PATHS; do args+=("$p"); done
+        if [ "$INPUT_LOCALE" != "fr-CA" ]; then args+=(--locale "$INPUT_LOCALE"); fi
+        if [ "$INPUT_NARROW" = "true" ]; then args+=(--narrow); fi
+        if [ "$INPUT_CODE" = "true" ]; then args+=(--code); fi
+        if [ -n "$INPUT_KEEP" ]; then args+=(--keep "$INPUT_KEEP"); fi
+        if [ -n "$INPUT_ONLY_KEY" ]; then args+=(--only-key "$INPUT_ONLY_KEY"); fi
+        for a in $INPUT_ARGS; do args+=("$a"); done
+        npx --yes --package "$spec" maisongr-typo "${args[@]}" --github

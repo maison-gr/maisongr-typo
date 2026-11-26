@@ -20,6 +20,7 @@ It prints `{ ok, files, issues, report: [{ file, issues: [{ rule, message, line,
 - JavaScript/TypeScript: French files (fr.ts, locales/fr/…) are found in folders; `--code` reads all code in a folder, its French strings only. Keys, imports and `${…}` are never touched.
 - For a translation file holding several languages: `--only-key fr`.
 - Mobile and other translation formats are read when French: `fr.lproj/*.strings`, `.xcstrings` (French localizations only), `res/values-fr/strings.xml`, `fr.po`, XLIFF with a French `target-language`, `config/locales/fr.yml`, `messages_fr.properties`, `app_fr.arb`. Only the text changes; keys, comments, metadata and escapes stay as written.
+- In a GitHub workflow: `uses: maison-gr/maisongr-typo@v1.0.5` with `paths:` (problems show on the pull request's lines); pre-commit: hook `maisongr-typo` or `maisongr-typo-fix`; no Node.js: `docker run --rm -v "$PWD:/work" ghcr.io/maison-gr/maisongr-typo check .`.
 - For France: `--locale fr-FR`. For a narrow no-break space before ; ! ? in Québec: `--narrow`.
 - A brand written with a mark French would space (`Toqué!`, `Yahoo!`): `--keep "Toqué!,Yahoo!"`.
 

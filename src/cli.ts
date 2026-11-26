@@ -31,14 +31,15 @@ Options
   --group-four-digits       1490 $ → 1 490 $ too
   --no-quotes --no-apostrophes --no-ellipsis --no-hours --no-ordinals --no-dollar-after
   --json                    print the report as JSON
+  --github                  report as GitHub Actions annotations, shown on the pull request's lines
   --version, --help
 `;
 
-interface Args { command: "check" | "fix" | "stdin"; paths: string[]; options: Options; onlyKey?: string; json: boolean; format?: Kind; code: boolean }
+interface Args { command: "check" | "fix" | "stdin"; paths: string[]; options: Options; onlyKey?: string; json: boolean; github: boolean; format?: Kind; code: boolean }
 
 function parse(argv: string[]): Args {
   const options: Options = {};
-  const args: Args = { command: "stdin", paths: [], options, json: false, code: false };
+  const args: Args = { command: "stdin", paths: [], options, json: false, github: false, code: false };
   const value = (i: number, flag: string) => {
     const v = argv[i + 1];
     if (v === undefined || v.startsWith("--")) throw new Usage(`${flag} needs a value`);
@@ -73,6 +74,7 @@ function parse(argv: string[]): Args {
       case "--no-ordinals": options.ordinals = false; break;
       case "--no-dollar-after": options.dollarAfter = false; break;
       case "--json": args.json = true; break;
+      case "--github": args.github = true; break;
       default:
         if (a.startsWith("-")) throw new Usage(`unknown option ${a}`);
         if (args.command === "stdin") throw new Usage(`"${a}": say check or fix first`);
@@ -90,6 +92,15 @@ const show = (s: string) => JSON.stringify(s.replace(/ /g, "⍽").replace(/ /
 
 function where(file: string, i: FileIssue): string {
   return i.key !== undefined ? `${file} [${i.key}] ${i.column}` : `${file}:${i.line}:${i.column}`;
+}
+
+/** A GitHub Actions workflow command: an error (check) or a notice (fix) shown on the file's line in the pull request. */
+function annotation(file: string, i: FileIssue, command: "check" | "fix" | "stdin"): string {
+  const data = (s: string) => s.replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A");
+  const property = (s: string) => data(s).replace(/:/g, "%3A").replace(/,/g, "%2C");
+  const level = command === "check" ? "error" : "notice";
+  const key = i.key !== undefined ? ` [${i.key}]` : "";
+  return `::${level} file=${property(file.replace(/\\/g, "/"))},line=${i.line},col=${i.column},title=${property(`maisongr-typo: ${i.rule}`)}::${data(`${show(i.found)} → ${show(i.expected)}${key}  ${i.message}`)}\n`;
 }
 
 function version(): string {
@@ -123,7 +134,7 @@ function main(argv: string[]): number {
     process.stdout.write(`${JSON.stringify({ ok: args.command === "fix" || total === 0, files: report.length, issues: total, report }, null, 2)}\n`);
   } else {
     for (const { file, issues, fixed } of report) {
-      for (const i of issues) process.stdout.write(`${where(file, i)}  ${i.rule}  ${show(i.found)} → ${show(i.expected)}  ${i.message}\n`);
+      for (const i of issues) process.stdout.write(args.github ? annotation(file, i, args.command) : `${where(file, i)}  ${i.rule}  ${show(i.found)} → ${show(i.expected)}  ${i.message}\n`);
       if (fixed) process.stdout.write(`fixed ${file}\n`);
     }
     const files = `${report.length} file${report.length === 1 ? "" : "s"}`;
